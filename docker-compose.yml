@@ -1,0 +1,48 @@
+version: "3"
+
+services:
+
+  postgres:
+    image: postgres:16.1-alpine
+    restart: always
+    environment:
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: tezea
+      PGDATA: /var/lib/postgresql/data/pgdata
+    volumes:
+      - ./local/postgres/:/docker-entrypoint-initdb.d/
+      - ./local/data:/var/lib/postgresql/data
+    ports:
+      - 5432:5432
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U mp_tezea -d tezea"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  pgadmin4:
+    image: tezea-dbtools 
+    build: # to build image with docker-compose
+      context: .
+      dockerfile: ./Dockerfile
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@tezea.com
+      PGADMIN_DEFAULT_PASSWORD: admin123
+      GITHUB_CLIENT_ID: '' # use direct login locally
+      GITHUB_CLIENT_SECRET: '' # use direct login locally
+    read_only: true
+    volumes:
+      - pgadmin-data:/var/lib/pgadmin
+      - pgadmin-tmp:/tmp
+    ports:
+      - 5055:80
+
+volumes:
+  pgadmin-data:
+  pgadmin-tmp:
+
+
+
+
+
+
