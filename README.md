@@ -4,6 +4,9 @@ Start postgres and pgadmin :
 Access pgadmin : 
     - http://localhost:5055
 
+Login with :
+    email: admin@tezea.com  
+    pw: admin123
 
 Setup database as follow (same credentials) :
 
