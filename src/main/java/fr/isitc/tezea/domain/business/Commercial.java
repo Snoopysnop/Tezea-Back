@@ -5,6 +5,6 @@ import lombok.EqualsAndHashCode;
 
 @Data
 @EqualsAndHashCode(callSuper=false)
-public class Commercial extends User {
+public class Commercial extends UserTezea {
     
 }

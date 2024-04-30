@@ -5,6 +5,6 @@ import lombok.EqualsAndHashCode;
 
 @Data
 @EqualsAndHashCode(callSuper=false)
-public class Concierge extends User {
+public class Concierge extends UserTezea {
     
 }

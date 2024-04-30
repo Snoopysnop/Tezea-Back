@@ -7,14 +7,14 @@ import lombok.Data;
 
 @Data
 @Entity
-public abstract class User {
+public abstract class UserTezea {
 
     private long id;
 
     private String firstname;
     private String lastname;
 
-    protected User() {
+    protected UserTezea() {
         
     }
 

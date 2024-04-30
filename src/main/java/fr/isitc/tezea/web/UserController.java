@@ -10,8 +10,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import fr.isitc.tezea.DAO.UserDAO;
-import fr.isitc.tezea.domain.business.User;
+import fr.isitc.tezea.DAO.UserTezeaDAO;
+import fr.isitc.tezea.domain.business.UserTezea;
 import io.swagger.v3.oas.annotations.Operation;
 
 @RestController
@@ -21,7 +21,7 @@ public class UserController {
     private static final Logger LOGGER = Logger.getLogger(UserController.class.getName());
 
     @Autowired
-    private UserDAO userDAO;
+    private UserTezeaDAO userDAO;
 
     @RequestMapping(value = "/users", method = RequestMethod.GET)
     @CrossOrigin
@@ -30,7 +30,7 @@ public class UserController {
         tags = {"User"},
         description = "Returns all users"
     )
-    public List<User> findAll() {
+    public List<UserTezea> findAll() {
         LOGGER.info("REST request to get all users");
         return userDAO.findAll();
     }

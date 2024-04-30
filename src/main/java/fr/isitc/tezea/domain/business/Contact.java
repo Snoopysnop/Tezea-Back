@@ -7,7 +7,7 @@ import lombok.EqualsAndHashCode;
 @Data
 @EqualsAndHashCode(callSuper=false)
 @Entity
-public class Contact extends User {
+public class Contact extends UserTezea {
     
     private Civility civility;
     private String phoneNumber;
