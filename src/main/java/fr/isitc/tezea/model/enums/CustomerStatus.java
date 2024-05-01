@@ -1,9 +1,9 @@
-package fr.isitc.tezea.domain.business;
+package fr.isitc.tezea.model.enums;
 
 public enum CustomerStatus {
     Business,
     Community,
     Association,
     Particular
-    
+
 }

@@ -1,4 +1,4 @@
-package fr.isitc.tezea.domain.request;
+package fr.isitc.tezea.model.enums;
 
 public enum Service {
     Service,
@@ -6,5 +6,5 @@ public enum Service {
     ServiceAndDonation,
     Plasma,
     Information
-    
+
 }

@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import fr.isitc.tezea.DAO.UserDAO;
-import fr.isitc.tezea.domain.business.User;
+import fr.isitc.tezea.model.User;
 import io.swagger.v3.oas.annotations.Operation;
 
 @RestController
@@ -26,10 +26,7 @@ public class UserController {
     @RequestMapping(value = "/users", method = RequestMethod.GET)
     @CrossOrigin
     @ResponseBody
-    @Operation(
-        tags = {"User"},
-        description = "Returns all users"
-    )
+    @Operation(tags = { "User" }, description = "Returns all users")
     public List<User> findAll() {
         LOGGER.info("REST request to get all users");
         return userDAO.findAll();

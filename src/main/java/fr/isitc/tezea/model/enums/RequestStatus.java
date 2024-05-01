@@ -1,4 +1,4 @@
-package fr.isitc.tezea.domain.request;
+package fr.isitc.tezea.model.enums;
 
 public enum RequestStatus {
     New,
@@ -9,5 +9,5 @@ public enum RequestStatus {
     Refused,
     Closed,
     Other
-    
+
 }
