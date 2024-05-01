@@ -1,0 +1,17 @@
+version: "3.8"
+services:
+
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    restart: always
+    environment:
+      - VIRTUAL_HOST=148.60.11.163
+
+  loadbalancer:
+    image: jwilder/nginx-proxy 
+    ports:
+      - "80:80"
+    volumes:
+      - /var/run/docker.sock:/tmp/docker.sock
