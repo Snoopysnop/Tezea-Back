@@ -65,7 +65,7 @@ public class User implements Serializable {
         // check conflicts
         TimeLine timeLine = new TimeLine(workSite.getBegin(), workSite.getEnd());
         for(WorkSite userWorkSites : this.workSites){
-            if(TimeLine.areTimelineInConflict(timeLine, new TimeLine(userWorkSites.getBegin(), userWorkSites.getEnd()))){
+            if(TimeLine.areTimelineInConcurrence(timeLine, new TimeLine(userWorkSites.getBegin(), userWorkSites.getEnd()))){
                 return false;
             }
         }
