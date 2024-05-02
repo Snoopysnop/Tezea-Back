@@ -1,7 +1,6 @@
 package fr.isitc.tezea.model;
 
 import java.io.Serializable;
-import java.time.LocalDateTime;
 import java.util.UUID;
 
 import jakarta.persistence.Column;
@@ -15,8 +14,8 @@ import lombok.Data;
 
 @Data
 @Entity
-@Table(name = "tool_schedule")
-public class ToolSchedule implements Serializable {
+@Table(name = "tool_usage")
+public class ToolUsage implements Serializable {
 
     @Id
     @GeneratedValue
@@ -30,12 +29,6 @@ public class ToolSchedule implements Serializable {
     @ManyToOne
     @JoinColumn(name = "work_site_id")
     private WorkSite workSite;
-
-    @Column(name = "begin")
-    private LocalDateTime begin;
-
-    @Column(name = "end")
-    private LocalDateTime end;
 
     @Column(name = "quantity")
     private int quantity;
