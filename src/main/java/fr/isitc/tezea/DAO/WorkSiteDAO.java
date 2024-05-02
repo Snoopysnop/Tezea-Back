@@ -9,5 +9,5 @@ import jakarta.transaction.Transactional;
 
 @Transactional
 public interface WorkSiteDAO extends JpaRepository<WorkSite, UUID> {    
-    
+
 }
