@@ -1,5 +1,6 @@
 package fr.isitc.tezea.model;
 
+import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
 
@@ -19,7 +20,7 @@ import jakarta.persistence.Table;
 import lombok.Data;
 
 import java.io.Serializable;
-import java.time.*;
+import java.time.LocalDateTime;
 
 @Data
 @Entity
@@ -42,6 +43,11 @@ public class WorkSite implements Serializable {
     @Column(name = "equipment")
     private Set<ToolUsage> equipment;
 
+    @OneToMany(mappedBy = "workSite")
+    @Column(name = "incidents")
+    private Set<Incident> incidents = new HashSet<>();
+
+
     @Column(name = "begin")
     private LocalDateTime begin;
 
@@ -62,5 +68,9 @@ public class WorkSite implements Serializable {
 
     @Column(name = "signature")
     private byte[] signature;
+
+    public void addIncident(Incident incident){
+        this.incidents.add(incident);
+    }
 
 }
