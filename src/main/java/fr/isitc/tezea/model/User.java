@@ -1,17 +1,20 @@
 package fr.isitc.tezea.model;
 
 import java.io.Serializable;
+import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
 
 import fr.isitc.tezea.model.enums.Role;
+import fr.isitc.tezea.service.DTO.UserDTO;
+import fr.isitc.tezea.utils.TimeLine;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
-import jakarta.persistence.OneToMany;
+import jakarta.persistence.ManyToMany;
 import jakarta.persistence.Table;
 import lombok.Data;
 
@@ -41,7 +44,34 @@ public class User implements Serializable {
     @Column(name = "phone_number")
     private String phoneNumber;
 
-    @OneToMany(mappedBy = "user")
-    private Set<UserSchedule> schedules;
+    @ManyToMany
+    @Column(name = "work_site_id")
+    private Set<WorkSite> workSites = new HashSet<>();
+
+    protected User() {
+
+    }
+
+    public User(UserDTO userDTO){
+        this.firstName = userDTO.getFirstName();
+        this.lastName = userDTO.getLastName();
+        this.role = userDTO.getRole();
+        this.email = userDTO.getEmail();
+        this.phoneNumber = userDTO.getPhoneNumber();
+    } 
+
+    public boolean addWorkSite(WorkSite workSite){
+
+        // check conflicts
+        TimeLine timeLine = new TimeLine(workSite.getBegin(), workSite.getEnd());
+        for(WorkSite userWorkSites : this.workSites){
+            if(TimeLine.areTimelineInConflict(timeLine, new TimeLine(userWorkSites.getBegin(), userWorkSites.getEnd()))){
+                return false;
+            }
+        }
+
+        this.workSites.add(workSite);
+        return true;
+    } 
 
 }

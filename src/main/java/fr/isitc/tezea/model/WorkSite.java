@@ -12,6 +12,7 @@ import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
@@ -33,13 +34,13 @@ public class WorkSite implements Serializable {
     @Column(name = "work_site_chief")
     private User workSiteChief;
 
-    @OneToMany(mappedBy = "workSite")
+    @ManyToMany
     @Column(name = "staff")
-    private Set<UserSchedule> staff;
+    private Set<User> staff;
 
     @OneToMany(mappedBy = "workSite")
     @Column(name = "equipment")
-    private Set<ToolSchedule> equipment;
+    private Set<ToolUsage> equipment;
 
     @Column(name = "begin")
     private LocalDateTime begin;

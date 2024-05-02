@@ -1,8 +1,10 @@
 package fr.isitc.tezea.model;
 
 import java.io.Serializable;
+import java.util.HashSet;
 import java.util.Set;
 
+import fr.isitc.tezea.service.DTO.ToolDTO;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
@@ -23,6 +25,15 @@ public class Tool implements Serializable {
     private int quantity;
 
     @OneToMany(mappedBy = "tool")
-    private Set<ToolSchedule> schedules;
+    private Set<ToolUsage> usages = new HashSet<>();
+
+    protected Tool() {
+
+    }
+
+    public Tool(ToolDTO toolDTO) {
+        this.name = toolDTO.getName();
+        this.quantity = toolDTO.getQuantity();
+    }
 
 }
