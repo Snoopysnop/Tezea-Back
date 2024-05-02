@@ -47,6 +47,9 @@ public class WorkSite implements Serializable {
     @Column(name = "incidents")
     private Set<Incident> incidents = new HashSet<>();
 
+    @OneToMany(mappedBy = "workSite")
+    @Column(name = "invoices")
+    private Set<Invoice> invoices = new HashSet<>();
 
     @Column(name = "begin")
     private LocalDateTime begin;
@@ -71,6 +74,10 @@ public class WorkSite implements Serializable {
 
     public void addIncident(Incident incident){
         this.incidents.add(incident);
+    }
+
+    public void addInvoice(Invoice invoice){
+        this.invoices.add(invoice);
     }
 
 }
