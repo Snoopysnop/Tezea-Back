@@ -18,9 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
 import fr.isitc.tezea.DAO.UserDAO;
-import fr.isitc.tezea.DAO.WorkSiteDAO;
 import fr.isitc.tezea.model.User;
-import fr.isitc.tezea.model.WorkSite;
 import fr.isitc.tezea.service.DTO.UserDTO;
 import fr.isitc.tezea.service.data.UserData;
 import io.swagger.v3.oas.annotations.Operation;
@@ -34,9 +32,6 @@ public class UserController {
 
     @Autowired
     private UserDAO userDAO;
-
-    @Autowired
-    private WorkSiteDAO workSiteDAO;
 
     @RequestMapping(method = RequestMethod.GET)
     @CrossOrigin
@@ -80,39 +75,6 @@ public class UserController {
         User user = new User(userDTO);
         userDAO.save(user);
         return new UserData(user);
-    }
-
-    @RequestMapping(value = "/{id}/worksite/{workSiteId}", method = RequestMethod.PUT)
-    @CrossOrigin
-    @Operation(tags = { "User" }, description = "Affect a worksite to user")
-    public void affectWorkSite(@PathVariable UUID id, @PathVariable UUID workSiteId) {
-        LOGGER.info("REST request to affect workSote " + workSiteId + " to user " + id);
-
-        // find User
-        Optional<User> user = userDAO.findById(id);
-        if(!user.isPresent()) {
-            LOGGER.info("User " + id + " not found");
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
-        }
-
-        // find WorkSite
-        Optional<WorkSite> workSite = workSiteDAO.findById(workSiteId);
-        if(!workSite.isPresent()) {
-            LOGGER.info("WorkSite " + workSiteId + " not found");
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
-        }
-
-        // apply workSite
-        User foundUser = user.get();
-        WorkSite foundWorkSite = workSite.get();
-
-        if(!foundUser.addWorkSite(foundWorkSite)){
-            LOGGER.info("User " + id + " is not available between " + foundWorkSite.getBegin() + " and " + foundWorkSite.getEnd());
-            throw new ResponseStatusException(HttpStatus.CONFLICT);
-        }
-
-        userDAO.save(foundUser);
-
     }
 
 }
