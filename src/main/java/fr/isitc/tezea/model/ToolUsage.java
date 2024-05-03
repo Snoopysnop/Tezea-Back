@@ -33,4 +33,14 @@ public class ToolUsage implements Serializable {
     @Column(name = "quantity")
     private int quantity;
 
+    protected ToolUsage() {
+
+    }
+
+    public ToolUsage(Tool tool, WorkSite workSite, int quantity) {
+        this.tool = tool;
+        this.workSite = workSite;
+        this.quantity = quantity;
+    }
+
 }

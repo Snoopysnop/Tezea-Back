@@ -1,11 +1,13 @@
 package fr.isitc.tezea.model;
 
 import java.io.Serializable;
+import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
 
 import fr.isitc.tezea.model.enums.Civility;
 import fr.isitc.tezea.model.enums.CustomerStatus;
+import fr.isitc.tezea.service.DTO.CustomerDTO;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -59,6 +61,27 @@ public class Customer implements Serializable {
     private String company;
 
     @OneToMany(mappedBy = "customer")
-    private Set<WorkSiteRequest> requests;
+    private Set<WorkSiteRequest> requests = new HashSet<>();
+
+    protected Customer() {
+    }
+
+    public Customer(CustomerDTO customerDTO) {
+        this.address = customerDTO.getAddress();
+        this.city = customerDTO.getCity();
+        this.civility = customerDTO.getCivility();
+        this.company = customerDTO.getCompany();
+        this.email = customerDTO.getEmail();
+        this.firstName = customerDTO.getFirstName();
+        this.lastName = customerDTO.getLastName();
+        this.phoneNumber = customerDTO.getPhoneNumber();
+        this.postalCode = customerDTO.getPostalCode();
+        this.status = customerDTO.getStatus();
+
+    }
+
+    public void addWorkSiteRequest(WorkSiteRequest workSiteRequest) {
+        this.requests.add(workSiteRequest);
+    }
 
 }

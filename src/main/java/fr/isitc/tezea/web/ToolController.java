@@ -91,7 +91,7 @@ public class ToolController {
         return toolDTO;
     }
 
-    @RequestMapping(value = "/tool/{name}/availability", method = RequestMethod.POST)
+    @RequestMapping(value = "/{name}/availability", method = RequestMethod.POST)
     @CrossOrigin
     @Operation(tags = { "Tool" }, description = "Returns the number of availability for tool with the name at specified timeline")
     public int numberOfAvailabilityAtTimeline(@PathVariable String name, @RequestBody TimeLine timeLine) {

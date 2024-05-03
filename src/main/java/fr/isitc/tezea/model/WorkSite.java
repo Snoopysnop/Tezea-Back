@@ -32,7 +32,8 @@ public class WorkSite implements Serializable {
     @Column(name = "id")
     private UUID id;
 
-    @Column(name = "work_site_chief")
+    @ManyToOne
+    @JoinColumn(name = "work_site_chief")
     private User workSiteChief;
 
     @ManyToMany
@@ -40,8 +41,8 @@ public class WorkSite implements Serializable {
     private Set<User> staff;
 
     @OneToMany(mappedBy = "workSite")
-    @Column(name = "equipment")
-    private Set<ToolUsage> equipment;
+    @Column(name = "equipments")
+    private Set<ToolUsage> equipments = new HashSet<>();
 
     @OneToMany(mappedBy = "workSite")
     @Column(name = "incidents")
@@ -71,6 +72,18 @@ public class WorkSite implements Serializable {
 
     @Column(name = "signature")
     private byte[] signature;
+
+    public WorkSite(LocalDateTime begin, LocalDateTime end, User workSiteChief, Set<User> staff, WorkSiteRequest request) {
+        this.begin = begin;
+        this.end = end;
+        this.workSiteChief = workSiteChief;
+        this.staff = staff;
+        this.request = request;
+    }
+
+    protected WorkSite() {
+
+    }
 
     public void addIncident(Incident incident){
         this.incidents.add(incident);
