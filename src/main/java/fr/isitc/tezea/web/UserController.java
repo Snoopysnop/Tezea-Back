@@ -13,27 +13,34 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 
 import fr.isitc.tezea.DAO.UserDAO;
 import fr.isitc.tezea.DAO.WorkSiteDAO;
 import fr.isitc.tezea.model.User;
 import fr.isitc.tezea.model.WorkSite;
+import fr.isitc.tezea.service.UserServices;
 import fr.isitc.tezea.service.DTO.UserDTO;
 import fr.isitc.tezea.service.data.UserData;
 import io.swagger.v3.oas.annotations.Operation;
+import jakarta.mail.Multipart;
 
 
 @RestController
-@RequestMapping(value = "/users")
+@RequestMapping(value = "/api/users")
 public class UserController {
 
     private static final Logger LOGGER = Logger.getLogger(UserController.class.getName());
 
     @Autowired
     private UserDAO userDAO;
+
+    @Autowired
+    private UserServices userServices;
 
     @Autowired
     private WorkSiteDAO workSiteDAO;
@@ -74,12 +81,9 @@ public class UserController {
     @CrossOrigin
     @ResponseBody
     @Operation(tags = { "User" }, description = "Create an user")
-    public UserData create(@RequestBody UserDTO userDTO) {
+    public UserData create(@RequestPart("user") UserDTO userDTO, @RequestPart("password") String password, @RequestPart(value = "file", required = false) MultipartFile file) {
         LOGGER.info("REST request to create user " + userDTO);
-
-        User user = new User(userDTO);
-        userDAO.save(user);
-        return new UserData(user);
+        return userServices.register(userDTO, password, file);
     }
 
     @RequestMapping(value = "/{id}/worksite/{workSiteId}", method = RequestMethod.PUT)
