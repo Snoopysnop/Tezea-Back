@@ -42,9 +42,6 @@ public class UserController {
     @Autowired
     private UserServices userServices;
 
-    @Autowired
-    private WorkSiteDAO workSiteDAO;
-
     @RequestMapping(method = RequestMethod.GET)
     @CrossOrigin
     @ResponseBody
@@ -84,39 +81,6 @@ public class UserController {
     public UserData create(@RequestPart("user") UserDTO userDTO, @RequestPart("password") String password, @RequestPart(value = "file", required = false) MultipartFile file) {
         LOGGER.info("REST request to create user " + userDTO);
         return userServices.register(userDTO, password, file);
-    }
-
-    @RequestMapping(value = "/{id}/worksite/{workSiteId}", method = RequestMethod.PUT)
-    @CrossOrigin
-    @Operation(tags = { "User" }, description = "Affect a worksite to user")
-    public void affectWorkSite(@PathVariable UUID id, @PathVariable UUID workSiteId) {
-        LOGGER.info("REST request to affect workSote " + workSiteId + " to user " + id);
-
-        // find User
-        Optional<User> user = userDAO.findById(id);
-        if(!user.isPresent()) {
-            LOGGER.info("User " + id + " not found");
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
-        }
-
-        // find WorkSite
-        Optional<WorkSite> workSite = workSiteDAO.findById(workSiteId);
-        if(!workSite.isPresent()) {
-            LOGGER.info("WorkSite " + workSiteId + " not found");
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
-        }
-
-        // apply workSite
-        User foundUser = user.get();
-        WorkSite foundWorkSite = workSite.get();
-
-        if(!foundUser.addWorkSite(foundWorkSite)){
-            LOGGER.info("User " + id + " is not available between " + foundWorkSite.getBegin() + " and " + foundWorkSite.getEnd());
-            throw new ResponseStatusException(HttpStatus.CONFLICT);
-        }
-
-        userDAO.save(foundUser);
-
     }
 
 }

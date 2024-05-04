@@ -14,8 +14,8 @@ import lombok.Data;
 
 @Data
 @Entity
-@Table(name = "tool_usage")
-public class ToolUsage implements Serializable {
+@Table(name = "invoice")
+public class Invoice implements Serializable {
 
     @Id
     @GeneratedValue
@@ -23,24 +23,31 @@ public class ToolUsage implements Serializable {
     private UUID id;
 
     @ManyToOne
-    @JoinColumn(name = "tool")
-    private Tool tool;
-
-    @ManyToOne
     @JoinColumn(name = "work_site_id")
     private WorkSite workSite;
 
-    @Column(name = "quantity")
-    private int quantity;
+    @Column(name = "invoice")
+    private byte[] invoice;
 
-    protected ToolUsage() {
+    @Column(name = "title")
+    private String title;
 
+    @Column(name = "description")
+    private String description;
+
+    @Column(name = "amount")
+    private int amount;
+
+    protected Invoice() {
+        
     }
 
-    public ToolUsage(Tool tool, WorkSite workSite, int quantity) {
-        this.tool = tool;
+    public Invoice(WorkSite workSite, byte[] invoice, String title, String description, int amount) {
         this.workSite = workSite;
-        this.quantity = quantity;
+        this.invoice = invoice;
+        this.title = title;
+        this.description = description;
+        this.amount = amount;
     }
-
+    
 }

@@ -21,7 +21,7 @@ public class TimeLineTests {
             LocalDateTime.of(2024, Month.MARCH, 6, 16, 0));
 
 
-        assertFalse(TimeLine.areTimelineInConflict(tl1, tl2));
+        assertFalse(TimeLine.areTimelineInConcurrence(tl1, tl2));
     }
 
     @Test
@@ -35,7 +35,7 @@ public class TimeLineTests {
             LocalDateTime.of(2024, Month.MARCH, 6, 16, 0));
 
 
-        assertTrue(TimeLine.areTimelineInConflict(tl1, tl2));
+        assertTrue(TimeLine.areTimelineInConcurrence(tl1, tl2));
     }
 
     @Test
@@ -49,7 +49,7 @@ public class TimeLineTests {
             LocalDateTime.of(2024, Month.MARCH, 6, 15, 0));
 
 
-        assertTrue(TimeLine.areTimelineInConflict(tl1, tl2));
+        assertTrue(TimeLine.areTimelineInConcurrence(tl1, tl2));
     }
 
     @Test
@@ -63,6 +63,6 @@ public class TimeLineTests {
             LocalDateTime.of(2024, Month.MARCH, 6, 15, 0));
 
 
-        assertTrue(TimeLine.areTimelineInConflict(tl1, tl2));
+        assertTrue(TimeLine.areTimelineInConcurrence(tl1, tl2));
     }
 }

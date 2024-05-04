@@ -1,8 +1,11 @@
 package fr.isitc.tezea.web;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.logging.Logger;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,8 +20,11 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
 import fr.isitc.tezea.DAO.ToolDAO;
+import fr.isitc.tezea.DAO.ToolUsageDAO;
 import fr.isitc.tezea.model.Tool;
+import fr.isitc.tezea.model.ToolUsage;
 import fr.isitc.tezea.service.DTO.ToolDTO;
+import fr.isitc.tezea.utils.TimeLine;
 import io.swagger.v3.oas.annotations.Operation;
 
 @RestController
@@ -29,6 +35,9 @@ public class ToolController {
     
     @Autowired
     private ToolDAO toolDAO;
+
+    @Autowired
+    private ToolUsageDAO toolUsageDAO;
 
     @RequestMapping(method = RequestMethod.GET)
     @CrossOrigin
@@ -80,6 +89,50 @@ public class ToolController {
         Tool newTool = new Tool(toolDTO);
         toolDAO.save(newTool);
         return toolDTO;
+    }
+
+    @RequestMapping(value = "/{name}/availability", method = RequestMethod.POST)
+    @CrossOrigin
+    @Operation(tags = { "Tool" }, description = "Returns the number of availability for tool with the name at specified timeline")
+    public int numberOfAvailabilityAtTimeline(@PathVariable String name, @RequestBody TimeLine timeLine) {
+        LOGGER.info("REST request to get the availability for tool " + name + " between " + timeLine.getBegin() + " and " + timeLine.getEnd());
+
+        Optional<Tool> tool = toolDAO.findById(name);
+
+        if(!tool.isPresent()){
+            LOGGER.info("tool " + name + " not found");
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+        }
+
+        Tool foundTool = tool.get();
+        int availability = foundTool.getQuantity();
+        int maxUses = 0;
+
+
+        // find ToolUsage using tool during the timeline
+        Set<ToolUsage> toolUsages = toolUsageDAO.findByToolBetweenDates(foundTool, timeLine.getBegin(), timeLine.getEnd());
+
+        // find all concurrence point during the timeline
+        Set<LocalDateTime> concurrencePoints = new HashSet<>();
+        for(ToolUsage toolUsage : toolUsages) {
+            concurrencePoints.add(toolUsage.getWorkSite().getBegin());
+            concurrencePoints.add(toolUsage.getWorkSite().getEnd());
+        }
+
+        for(LocalDateTime point : concurrencePoints) {
+            if(timeLine.isInConcurrenceWith(point)) {
+                int simultaneousUses = 0;
+
+                Set<ToolUsage> toolUsages_ = toolUsageDAO.findByToolAndDate(foundTool, point);
+                for(ToolUsage toolUsage : toolUsages_) {
+                    simultaneousUses += toolUsage.getQuantity();
+                }
+                maxUses = Math.max(maxUses, simultaneousUses);
+            }
+
+        }
+    
+        return availability - maxUses;
     }
 
 }
