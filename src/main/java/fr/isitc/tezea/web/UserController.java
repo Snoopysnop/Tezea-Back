@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
@@ -79,6 +80,20 @@ public class UserController {
 
         User user =  findUser(id);
         return new UserData(user);
+    }
+
+    @RequestMapping(value = "/findSomeUsers", method = RequestMethod.GET)
+    @CrossOrigin
+    @ResponseBody
+    @Operation(tags = { "User" }, description = "Returns users with id present in the given list")
+    public Set<UserData> findSomeUsers(@RequestParam List<UUID> uuids) {
+        LOGGER.info("REST request to find users with id present in " + uuids);
+
+        Set<UserData> users = new HashSet<>();
+        for(User user : userDAO.findByIds(uuids)) {
+            users.add(new UserData(user));
+        }
+        return users;
     }
 
     @RequestMapping(value = "/create", method = RequestMethod.POST)
