@@ -29,7 +29,7 @@ import fr.isitc.tezea.service.data.WorkSiteRequestData;
 import io.swagger.v3.oas.annotations.Operation;
 
 @RestController
-@RequestMapping(value = "/customers")
+@RequestMapping(value = "/api/customers")
 public class CustomerController {
 
     private static final Logger LOGGER = Logger.getLogger(CustomerController.class.getName());
