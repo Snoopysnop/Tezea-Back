@@ -46,7 +46,7 @@ import fr.isitc.tezea.service.DTO.InvoiceDTO;
 import io.swagger.v3.oas.annotations.Operation;
 
 @RestController
-@RequestMapping(value = "/worksites")
+@RequestMapping(value = "/api/worksites")
 public class WorkSiteController {
 
     private static final Logger LOGGER = Logger.getLogger(WorkSiteController.class.getName());
