@@ -40,6 +40,19 @@ public class CustomerController {
     @Autowired
     private WorkSiteRequestDAO workSiteRequestDAO;
 
+    private Customer findCustomer(UUID id) {
+        Optional<Customer> customer = customerDAO.findById(id);
+
+        if (!customer.isPresent()) {
+            LOGGER.info("Customer " + id + " not found");
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+        }
+
+        return customer.get();
+    }
+
+
+
     @RequestMapping(method = RequestMethod.GET)
     @CrossOrigin
     @ResponseBody
@@ -55,6 +68,18 @@ public class CustomerController {
         return customers;
     }
 
+
+    @RequestMapping(value = "/{id}", method = RequestMethod.GET)
+    @CrossOrigin
+    @ResponseBody
+    @Operation(tags = { "Customer" }, description = "Returns the customer with the id")
+    public CustomerData findOne(@PathVariable UUID id) {
+        LOGGER.info("REST request to find customer with id " + id);
+
+        Customer customer = findCustomer(id);
+        return new CustomerData(customer);
+    }
+
     @RequestMapping(value = "/create", method = RequestMethod.POST)
     @CrossOrigin
     @ResponseBody
@@ -65,6 +90,20 @@ public class CustomerController {
         Customer newCustomer = new Customer(customerDTO);
         customerDAO.save(newCustomer);
         return new CustomerData(newCustomer);
+    }
+
+    @RequestMapping(value = "/{id}/update", method = RequestMethod.PATCH)
+    @CrossOrigin
+    @ResponseBody
+    @Operation(tags = { "Customer" }, description = "Create an customer")
+    public CustomerData update(@PathVariable UUID id, @RequestBody CustomerDTO customerDTO) {
+        LOGGER.info("REST request to update customer " + id + " with " + customerDTO);
+        Customer customer = findCustomer(id);
+        
+        customer.patch(customerDTO);
+        customerDAO.save(customer);
+
+        return new CustomerData(customer);
     }
 
     @RequestMapping(value = "/{id}/workSiteRequest", method = RequestMethod.GET)

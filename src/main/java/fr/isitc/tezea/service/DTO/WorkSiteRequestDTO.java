@@ -60,7 +60,7 @@ public class WorkSiteRequestDTO implements Serializable {
         this.category = workSiteRequest.getCategory();
         this.city = workSiteRequest.getCity();
         this.concierge = workSiteRequest.getConcierge().getId();
-        this.customer = workSiteRequest.getCustomer().getId();
+        this.customer = workSiteRequest.getCustomer() == null ? null : workSiteRequest.getCustomer().getId();
         this.estimatedDate = workSiteRequest.getEstimatedDate();
         this.description = workSiteRequest.getDescription();
         this.chronoQuote = workSiteRequest.isChronoQuote();
@@ -70,7 +70,7 @@ public class WorkSiteRequestDTO implements Serializable {
         this.removal = workSiteRequest.isRemoval();
         this.removalRecycling = workSiteRequest.isRemovalRecycling();
         this.serviceType = workSiteRequest.getServiceType();
-        this.siteChief = workSiteRequest.getSiteChief().getId();
+        this.siteChief = workSiteRequest.getSiteChief() == null ? null : workSiteRequest.getSiteChief().getId();
         this.tezeaAffectation = workSiteRequest.getTezeaAffectation();
         this.title = workSiteRequest.getTitle();
         this.volumeEstimate = workSiteRequest.getVolumeEstimate();

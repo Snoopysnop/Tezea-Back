@@ -84,20 +84,17 @@ public class WorkSiteRequestController {
             LOGGER.info("concierge " + workSiteRequestDTO.getConcierge() + " not found");
             throw new ResponseStatusException(HttpStatus.NOT_FOUND);
         }
-
-        Optional<User> siteChief = userDAO.findById(workSiteRequestDTO.getSiteChief());
-        if (!siteChief.isPresent()) {
-            LOGGER.info("site chief " + workSiteRequestDTO.getSiteChief() + " not found");
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+        
+        User siteChief = null;
+        if(workSiteRequestDTO.getSiteChief() != null){
+            siteChief = userDAO.findById(workSiteRequestDTO.getSiteChief()).get();
         }
-
-        Optional<Customer> customer = customerDAO.findById(workSiteRequestDTO.getCustomer());
-        if (!customer.isPresent()) {
-            LOGGER.info("customer " + workSiteRequestDTO.getCustomer() + " not found");
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+       
+        Customer customer = null;
+        if(workSiteRequestDTO.getCustomer() != null) {
+            customer = customerDAO.findById(workSiteRequestDTO.getCustomer()).get();
         }
-
-        WorkSiteRequest newWorkSiteRequest = new WorkSiteRequest(concierge.get(), siteChief.get(), customer.get(), workSiteRequestDTO);
+        WorkSiteRequest newWorkSiteRequest = new WorkSiteRequest(concierge.get(), siteChief, customer, workSiteRequestDTO);
 
         workSiteRequestDAO.save(newWorkSiteRequest);
         return new WorkSiteRequestData(newWorkSiteRequest);
