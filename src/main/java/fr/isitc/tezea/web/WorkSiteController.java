@@ -40,6 +40,7 @@ import fr.isitc.tezea.model.enums.SatisfactionLevel;
 import fr.isitc.tezea.model.enums.WorkSiteStatus;
 import fr.isitc.tezea.service.DTO.IncidentDTO;
 import fr.isitc.tezea.service.DTO.WorkSiteDTO;
+import fr.isitc.tezea.service.data.IncidentData;
 import fr.isitc.tezea.service.data.WorkSiteData;
 import fr.isitc.tezea.service.DTO.InvoiceDTO;
 
@@ -209,7 +210,7 @@ public class WorkSiteController {
     @CrossOrigin
     @ResponseBody
     @Operation(tags = { "WorkSite" }, description = "Apply incident to worksite")
-    public void addIncident(@PathVariable UUID id, @RequestBody IncidentDTO incidentDTO){
+    public IncidentData addIncident(@PathVariable UUID id, @RequestBody IncidentDTO incidentDTO){
         LOGGER.info("REST request to declare incident " + incidentDTO + " to workSite " + id);
 
         WorkSite workSite = findWorkSite(id);
@@ -218,7 +219,55 @@ public class WorkSiteController {
         workSite.addIncident(incident);
         workSiteDAO.save(workSite);
         incidentDAO.save(incident);
+
+        return new IncidentData(incident);
+
     }
+
+    @RequestMapping(value = "/incident/{id}/evidences", method = RequestMethod.PUT)
+    @CrossOrigin
+    @ResponseBody
+    @Operation(tags = { "WorkSite" }, description = "Add evidence to an incident")
+    public IncidentData addEvidence(@PathVariable UUID id, @RequestPart("evidence") MultipartFile evidence){
+        LOGGER.info("REST request to add evidence to incident " + id);
+
+        Optional<Incident> incident = incidentDAO.findById(id);
+        if(!incident.isPresent()) {
+            LOGGER.info("incident " + id + " not found");
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+        }
+
+        Incident foundIncident = incident.get();
+        try {
+			foundIncident.addEvidence(evidence.getBytes());
+		} catch (IOException e) {
+			LOGGER.warning("Access error on uploaded file");
+            e.printStackTrace();
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+
+        incidentDAO.save(foundIncident);
+        return new IncidentData(foundIncident);
+
+    }
+    
+
+    @RequestMapping(value = "/{id}/incidents", method = RequestMethod.GET)
+    @CrossOrigin
+    @ResponseBody
+    @Operation(tags = { "WorkSite" }, description = "Get worksite's incidents")
+    public Set<IncidentData> getWorkSiteIncidents(@PathVariable UUID id){
+        LOGGER.info("REST request get incident for worksite " + id);
+        findWorkSite(id);
+
+        Set<IncidentData> incidents = new HashSet<>();
+        for(Incident incident : workSiteDAO.findIncidentById(id)) {
+            incidents.add(new IncidentData(incident));
+        }
+
+        return incidents;
+    }
+
 
     @RequestMapping(value = "/{id}/invoice", method = RequestMethod.PUT)
     @CrossOrigin
