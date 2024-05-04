@@ -23,9 +23,12 @@ import fr.isitc.tezea.DAO.UserDAO;
 import fr.isitc.tezea.DAO.WorkSiteDAO;
 import fr.isitc.tezea.model.User;
 import fr.isitc.tezea.model.WorkSite;
+import fr.isitc.tezea.model.WorkSiteRequest;
 import fr.isitc.tezea.model.enums.Role;
 import fr.isitc.tezea.service.DTO.UserDTO;
 import fr.isitc.tezea.service.data.UserData;
+import fr.isitc.tezea.service.data.WorkSiteData;
+import fr.isitc.tezea.service.data.WorkSiteRequestData;
 import fr.isitc.tezea.utils.TimeLine;
 import io.swagger.v3.oas.annotations.Operation;
 
@@ -40,6 +43,17 @@ public class UserController {
 
     @Autowired
     private WorkSiteDAO workSiteDAO;
+
+    private User findUser(UUID id){
+        Optional<User> user = userDAO.findById(id);
+
+        if (!user.isPresent()) {
+            LOGGER.info("User " + id + " not found");
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+        }
+
+        return user.get();
+    }
 
     @RequestMapping(method = RequestMethod.GET)
     @CrossOrigin
@@ -63,14 +77,8 @@ public class UserController {
     public UserData findOne(@PathVariable UUID id) {
         LOGGER.info("REST request to find user with id " + id);
 
-        Optional<User> user = userDAO.findById(id);
-
-        if (!user.isPresent()) {
-            LOGGER.info("User " + id + " not found");
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
-        }
-
-        return new UserData(user.get());
+        User user =  findUser(id);
+        return new UserData(user);
     }
 
     @RequestMapping(value = "/create", method = RequestMethod.POST)
@@ -145,6 +153,49 @@ public class UserController {
         }
 
         return availableWorkSiteChiefs;
+    }
+
+
+    @RequestMapping(value = "{id}/workSites", method = RequestMethod.POST)
+    @CrossOrigin
+    @ResponseBody
+    @Operation(tags = { "User" }, description = "Find worksite chiefs worksites")
+    public Set<WorkSiteData> getWorkSiteChiefWorkSites(@PathVariable UUID id) {
+        LOGGER.info("REST request to get worksite chief worksites");
+
+        User user =  findUser(id);
+        if(user.getRole() != Role.WorkSiteChief){
+            LOGGER.info("User is not a worksite chief");
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+        }
+    
+        Set<WorkSiteData> workSites = new HashSet<>();
+        for(WorkSite workSite : workSiteDAO.findByWorkSiteChief(user)) {
+            workSites.add(new WorkSiteData(workSite));
+        }
+        
+        return workSites;
+    }
+
+    @RequestMapping(value = "{id}/workSiteRequests", method = RequestMethod.POST)
+    @CrossOrigin
+    @ResponseBody
+    @Operation(tags = { "User" }, description = "Find worksite chiefs worksite requests")
+    public Set<WorkSiteRequestData> getWorkSiteChiefWorkSiteRequests(@PathVariable UUID id) {
+        LOGGER.info("REST request to get worksite chief worksite requests");
+
+        User user =  findUser(id);
+        if(user.getRole() != Role.WorkSiteChief){
+            LOGGER.info("User is not a worksite chief");
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+        }
+    
+        Set<WorkSiteRequestData> workSiteRequests = new HashSet<>();
+        for(WorkSiteRequest workSiteRequest : workSiteDAO.findWorkSiteRequestByWorkSiteChief(user)) {
+            workSiteRequests.add(new WorkSiteRequestData(workSiteRequest));
+        }
+        
+        return workSiteRequests;
     }
 
 }
