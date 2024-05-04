@@ -1,7 +1,6 @@
 package fr.isitc.tezea.service.data;
 
 import java.time.LocalDateTime;
-import java.util.UUID;
 
 import fr.isitc.tezea.model.WorkSiteRequest;
 import fr.isitc.tezea.model.enums.RequestStatus;
@@ -13,7 +12,7 @@ import lombok.EqualsAndHashCode;
 @EqualsAndHashCode(callSuper = false)
 public class WorkSiteRequestData extends WorkSiteRequestDTO {
 
-    private UUID id;
+    private Integer id;
     private RequestStatus status;
     private LocalDateTime creationDate;
 

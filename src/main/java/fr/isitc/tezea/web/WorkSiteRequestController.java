@@ -3,7 +3,6 @@ package fr.isitc.tezea.web;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
 import java.util.logging.Logger;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -62,7 +61,7 @@ public class WorkSiteRequestController {
     @CrossOrigin
     @ResponseBody
     @Operation(tags = { "WorkSiteRequest" }, description = "Returns the work site request {id}")
-    public WorkSiteRequestData findById(@PathVariable UUID id) {
+    public WorkSiteRequestData findById(@PathVariable Integer id) {
 
         Optional<WorkSiteRequest> workSiteRequest;
         workSiteRequest = workSiteRequestDAO.findById(id);
@@ -108,7 +107,7 @@ public class WorkSiteRequestController {
     @CrossOrigin
     @ResponseBody
     @Operation(tags = { "WorkSiteRequest" }, description = "Update status of a work site request")
-    public void updateStatus(@PathVariable UUID id, @RequestParam("status") RequestStatus status) {
+    public void updateStatus(@PathVariable Integer id, @RequestParam("status") RequestStatus status) {
 
         Optional<WorkSiteRequest> workSiteRequest = workSiteRequestDAO.findById(id);
         if (!workSiteRequest.isPresent()) {

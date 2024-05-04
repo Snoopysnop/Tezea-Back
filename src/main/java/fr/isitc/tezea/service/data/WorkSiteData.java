@@ -14,7 +14,7 @@ import lombok.EqualsAndHashCode;
 public class WorkSiteData extends WorkSiteDTO {
 
     private UUID id;
-    private UUID request;
+    private Integer request;
     private SatisfactionLevel satisfaction;
     private WorkSiteStatus status;
     private byte[] signature;
