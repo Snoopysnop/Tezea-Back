@@ -25,6 +25,7 @@ import fr.isitc.tezea.model.Customer;
 import fr.isitc.tezea.model.User;
 import fr.isitc.tezea.model.WorkSiteRequest;
 import fr.isitc.tezea.model.enums.RequestStatus;
+import fr.isitc.tezea.model.enums.Role;
 import fr.isitc.tezea.service.DTO.WorkSiteRequestDTO;
 import fr.isitc.tezea.service.data.WorkSiteRequestData;
 import io.swagger.v3.oas.annotations.Operation;
@@ -66,7 +67,7 @@ public class WorkSiteRequestController {
 
         Optional<WorkSiteRequest> workSiteRequest;
         workSiteRequest = workSiteRequestDAO.findById(id);
-        if(!workSiteRequest.isPresent()) {
+        if (!workSiteRequest.isPresent()) {
             LOGGER.info("Work site request " + id + " not found");
             throw new ResponseStatusException(HttpStatus.NOT_FOUND);
         }
@@ -85,10 +86,18 @@ public class WorkSiteRequestController {
             LOGGER.info("concierge " + workSiteRequestDTO.getConcierge() + " not found");
             throw new ResponseStatusException(HttpStatus.NOT_FOUND);
         }
+        if (concierge.get().getRole() != Role.Concierge) {
+            LOGGER.info("user " + workSiteRequestDTO.getConcierge() + " is not a concierge");
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+        }
 
         Optional<User> siteChief = userDAO.findById(workSiteRequestDTO.getSiteChief());
         if (!siteChief.isPresent()) {
             LOGGER.info("site chief " + workSiteRequestDTO.getSiteChief() + " not found");
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+        }
+        if (siteChief.get().getRole() != Role.SiteChief) {
+            LOGGER.info("user " + workSiteRequestDTO.getSiteChief() + " is not a site chief");
             throw new ResponseStatusException(HttpStatus.NOT_FOUND);
         }
 
@@ -98,7 +107,8 @@ public class WorkSiteRequestController {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND);
         }
 
-        WorkSiteRequest newWorkSiteRequest = new WorkSiteRequest(concierge.get(), siteChief.get(), customer.get(), workSiteRequestDTO);
+        WorkSiteRequest newWorkSiteRequest = new WorkSiteRequest(concierge.get(), siteChief.get(), customer.get(),
+                workSiteRequestDTO);
 
         workSiteRequestDAO.save(newWorkSiteRequest);
         return new WorkSiteRequestData(newWorkSiteRequest);
