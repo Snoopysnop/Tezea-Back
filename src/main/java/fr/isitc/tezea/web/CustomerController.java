@@ -29,7 +29,7 @@ import fr.isitc.tezea.service.data.WorkSiteRequestData;
 import io.swagger.v3.oas.annotations.Operation;
 
 @RestController
-@RequestMapping(value = "/customers")
+@RequestMapping(value = "/api/customers")
 public class CustomerController {
 
     private static final Logger LOGGER = Logger.getLogger(CustomerController.class.getName());
@@ -67,7 +67,6 @@ public class CustomerController {
         return new CustomerData(newCustomer);
     }
 
-
     @RequestMapping(value = "/{id}/workSiteRequest", method = RequestMethod.GET)
     @CrossOrigin
     @ResponseBody
@@ -82,10 +81,10 @@ public class CustomerController {
         }
 
         Set<WorkSiteRequestData> requests = new HashSet<>();
-        for(WorkSiteRequest request : workSiteRequestDAO.findByCustomer(customer.get())){
+        for (WorkSiteRequest request : workSiteRequestDAO.findByCustomer(customer.get())) {
             requests.add(new WorkSiteRequestData(request));
         }
-        
+
         return requests;
     }
 }

@@ -29,9 +29,8 @@ import fr.isitc.tezea.service.data.UserData;
 import fr.isitc.tezea.utils.TimeLine;
 import io.swagger.v3.oas.annotations.Operation;
 
-
 @RestController
-@RequestMapping(value = "/users")
+@RequestMapping(value = "/api/users")
 public class UserController {
 
     private static final Logger LOGGER = Logger.getLogger(UserController.class.getName());
@@ -50,7 +49,7 @@ public class UserController {
         LOGGER.info("REST request to get all users");
 
         List<UserData> users = new ArrayList<>();
-        for(User user : userDAO.findAll()) {
+        for (User user : userDAO.findAll()) {
             users.add(new UserData(user));
         }
 
@@ -66,15 +65,15 @@ public class UserController {
 
         Optional<User> user = userDAO.findById(id);
 
-        if(!user.isPresent()){
+        if (!user.isPresent()) {
             LOGGER.info("User " + id + " not found");
             throw new ResponseStatusException(HttpStatus.NOT_FOUND);
         }
-        
+
         return new UserData(user.get());
     }
 
-    @RequestMapping(value = "/create", method=RequestMethod.POST)
+    @RequestMapping(value = "/create", method = RequestMethod.POST)
     @CrossOrigin
     @ResponseBody
     @Operation(tags = { "User" }, description = "Create an user")
@@ -86,60 +85,62 @@ public class UserController {
         return new UserData(user);
     }
 
-    @RequestMapping(value = "/{role}", method=RequestMethod.POST)
+    @RequestMapping(value = "/{role}", method = RequestMethod.POST)
     @CrossOrigin
     @ResponseBody
     @Operation(tags = { "User" }, description = "Find users by role")
-    public Set<UserData> findbyRole(@RequestBody Role role){
+    public Set<UserData> findbyRole(@RequestBody Role role) {
         LOGGER.info("REST request to find users with role" + role);
 
         Set<UserData> users = new HashSet<>();
 
-        for(User user : userDAO.findByRole(role)){
+        for (User user : userDAO.findByRole(role)) {
             users.add(new UserData(user));
         }
 
         return users;
     }
 
-    @RequestMapping(value = "/staff/availabilities", method=RequestMethod.POST)
+    @RequestMapping(value = "/staff/availabilities", method = RequestMethod.POST)
     @CrossOrigin
     @ResponseBody
     @Operation(tags = { "User" }, description = "Find available staff")
     public Set<UserData> getAvailableStaff(@RequestBody TimeLine timeLine) {
-        LOGGER.info("REST request to find employees available between " + timeLine.getBegin() + " and " + timeLine.getEnd());
+        LOGGER.info("REST request to find employees available between " + timeLine.getBegin() + " and "
+                + timeLine.getEnd());
 
         Set<User> users = userDAO.findByRole(Role.Employee);
 
         Set<WorkSite> workSites = workSiteDAO.findWorkSiteBetweenDate(timeLine.getBegin(), timeLine.getEnd());
-        for(WorkSite workSite : workSites) {
+        for (WorkSite workSite : workSites) {
             users.removeAll(workSite.getStaff());
         }
 
         Set<UserData> availableStaff = new HashSet<>();
-        for(User user : users) {
+        for (User user : users) {
             availableStaff.add(new UserData(user));
         }
 
         return availableStaff;
     }
 
-    @RequestMapping(value = "/workSiteChiefs/availabilities", method=RequestMethod.POST)
+    @RequestMapping(value = "/workSiteChiefs/availabilities", method = RequestMethod.POST)
     @CrossOrigin
     @ResponseBody
     @Operation(tags = { "User" }, description = "Find available worksite chiefs")
     public Set<UserData> getAvailableWorkSiteChiefs(@RequestBody TimeLine timeLine) {
-        LOGGER.info("REST request to find employees available between " + timeLine.getBegin() + " and " + timeLine.getEnd());
+        LOGGER.info("REST request to find employees available between " + timeLine.getBegin() + " and "
+                + timeLine.getEnd());
 
         Set<User> users = userDAO.findByRole(Role.WorkSiteChief);
 
         Set<WorkSite> workSites = workSiteDAO.findWorkSiteBetweenDate(timeLine.getBegin(), timeLine.getEnd());
-        for(WorkSite workSite : workSites) {
+        for (WorkSite workSite : workSites) {
             users.remove(workSite.getWorkSiteChief());
         }
 
         Set<UserData> availableWorkSiteChiefs = new HashSet<>();
-        for(User user : users) {
+        for (User user : users) {
             availableWorkSiteChiefs.add(new UserData(user));
         }
 

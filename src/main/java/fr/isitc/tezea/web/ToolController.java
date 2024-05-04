@@ -30,11 +30,11 @@ import fr.isitc.tezea.utils.TimeLine;
 import io.swagger.v3.oas.annotations.Operation;
 
 @RestController
-@RequestMapping(value = "/tools")
+@RequestMapping(value = "/api/tools")
 public class ToolController {
 
     private static final Logger LOGGER = Logger.getLogger(ToolController.class.getName());
-    
+
     @Autowired
     private ToolDAO toolDAO;
 
@@ -49,7 +49,7 @@ public class ToolController {
         LOGGER.info("REST request to get all tools");
 
         List<ToolDTO> tools = new ArrayList<>();
-        for(Tool tool : toolDAO.findAll()) {
+        for (Tool tool : toolDAO.findAll()) {
             tools.add(new ToolDTO(tool));
         }
 
@@ -65,15 +65,15 @@ public class ToolController {
 
         Optional<Tool> tool = toolDAO.findById(name);
 
-        if(!tool.isPresent()){
+        if (!tool.isPresent()) {
             LOGGER.info("tool " + name + " not found");
             throw new ResponseStatusException(HttpStatus.NOT_FOUND);
         }
-        
+
         return new ToolDTO(tool.get());
     }
 
-    @RequestMapping(value = "/create", method=RequestMethod.POST)
+    @RequestMapping(value = "/create", method = RequestMethod.POST)
     @CrossOrigin
     @ResponseBody
     @Operation(tags = { "Tool" }, description = "Create a tool")
@@ -83,7 +83,7 @@ public class ToolController {
         // check conflicts
         String name = toolDTO.getName();
         Optional<Tool> tool = toolDAO.findById(name);
-        if(tool.isPresent()) {
+        if (tool.isPresent()) {
             LOGGER.info("Tool " + name + " already exists");
             throw new ResponseStatusException(HttpStatus.CONFLICT);
         }
@@ -95,13 +95,15 @@ public class ToolController {
 
     @RequestMapping(value = "/{name}/availabilities", method = RequestMethod.POST)
     @CrossOrigin
-    @Operation(tags = { "Tool" }, description = "Returns the number of availabilities for tool with the name at specified timeline")
+    @Operation(tags = {
+            "Tool" }, description = "Returns the number of availabilities for tool with the name at specified timeline")
     public int numberOfAvailabilitiesAtTimeline(@PathVariable String name, @RequestBody TimeLine timeLine) {
-        LOGGER.info("REST request to get the availability for tool " + name + " between " + timeLine.getBegin() + " and " + timeLine.getEnd());
+        LOGGER.info("REST request to get the availability for tool " + name + " between " + timeLine.getBegin()
+                + " and " + timeLine.getEnd());
 
         Optional<Tool> tool = toolDAO.findById(name);
 
-        if(!tool.isPresent()){
+        if (!tool.isPresent()) {
             LOGGER.info("tool " + name + " not found");
             throw new ResponseStatusException(HttpStatus.NOT_FOUND);
         }
@@ -110,41 +112,42 @@ public class ToolController {
         int availability = foundTool.getQuantity();
         int maxUses = 0;
 
-
         // find ToolUsage using tool during the timeline
-        Set<ToolUsage> toolUsages = toolUsageDAO.findByToolBetweenDates(foundTool, timeLine.getBegin(), timeLine.getEnd());
+        Set<ToolUsage> toolUsages = toolUsageDAO.findByToolBetweenDates(foundTool, timeLine.getBegin(),
+                timeLine.getEnd());
 
         // find all concurrence point during the timeline
         Set<LocalDateTime> concurrencePoints = new HashSet<>();
-        for(ToolUsage toolUsage : toolUsages) {
+        for (ToolUsage toolUsage : toolUsages) {
             concurrencePoints.add(toolUsage.getWorkSite().getBegin());
             concurrencePoints.add(toolUsage.getWorkSite().getEnd());
         }
 
-        for(LocalDateTime point : concurrencePoints) {
-            if(timeLine.isInConcurrenceWith(point)) {
+        for (LocalDateTime point : concurrencePoints) {
+            if (timeLine.isInConcurrenceWith(point)) {
                 int simultaneousUses = 0;
 
                 Set<ToolUsage> toolUsages_ = toolUsageDAO.findByToolAndDate(foundTool, point);
-                for(ToolUsage toolUsage : toolUsages_) {
+                for (ToolUsage toolUsage : toolUsages_) {
                     simultaneousUses += toolUsage.getQuantity();
                 }
                 maxUses = Math.max(maxUses, simultaneousUses);
             }
 
         }
-    
+
         return availability - maxUses;
     }
 
     @RequestMapping(value = "/availabilities", method = RequestMethod.POST)
     @CrossOrigin
     @Operation(tags = { "Tool" }, description = "Returns the availabilities for all tools at specified timeline")
-    public Map<String, Integer> getAvailabilities(@RequestBody TimeLine timeLine){
-        LOGGER.info("REST request to get tools availabilities between " + timeLine.getBegin() + " and " + timeLine.getEnd());
+    public Map<String, Integer> getAvailabilities(@RequestBody TimeLine timeLine) {
+        LOGGER.info("REST request to get tools availabilities between " + timeLine.getBegin() + " and "
+                + timeLine.getEnd());
 
         Map<String, Integer> availabilities = new HashMap<>();
-        for(Tool tool : toolDAO.findAll()){
+        for (Tool tool : toolDAO.findAll()) {
             availabilities.put(tool.getName(), numberOfAvailabilitiesAtTimeline(tool.getName(), timeLine));
         }
 

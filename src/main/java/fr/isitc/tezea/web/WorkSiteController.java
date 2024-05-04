@@ -47,7 +47,7 @@ import fr.isitc.tezea.service.DTO.InvoiceDTO;
 import io.swagger.v3.oas.annotations.Operation;
 
 @RestController
-@RequestMapping(value = "/worksites")
+@RequestMapping(value = "/api/worksites")
 public class WorkSiteController {
 
     private static final Logger LOGGER = Logger.getLogger(WorkSiteController.class.getName());
@@ -73,9 +73,9 @@ public class WorkSiteController {
     @Autowired
     private InvoiceDAO invoiceDAO;
 
-    private WorkSite findWorkSite(UUID id){
+    private WorkSite findWorkSite(UUID id) {
         Optional<WorkSite> workSite = workSiteDAO.findById(id);
-        if(!workSite.isPresent()) {
+        if (!workSite.isPresent()) {
             LOGGER.info("WorkSite " + id + " not found");
             throw new ResponseStatusException(HttpStatus.NOT_FOUND);
         }
@@ -91,10 +91,10 @@ public class WorkSiteController {
         LOGGER.info("REST request to get all work sites");
 
         Set<WorkSiteData> workSites = new HashSet<>();
-        for(WorkSite workSite : workSiteDAO.findAll()){
+        for (WorkSite workSite : workSiteDAO.findAll()) {
             workSites.add(new WorkSiteData(workSite));
         }
-        
+
         return workSites;
     }
 
@@ -139,30 +139,30 @@ public class WorkSiteController {
         }
 
         Optional<WorkSiteRequest> workSiteRequest = workSiteRequestDAO.findById(workSiteDTO.getWorkSiteRequest());
-        if(!workSiteRequest.isPresent()) {
+        if (!workSiteRequest.isPresent()) {
             LOGGER.info("workSiteRequest " + workSiteDTO.getWorkSiteRequest() + " not found");
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
         }
 
-        WorkSite newWorkSite = new WorkSite(workSiteDTO.getBegin(), workSiteDTO.getEnd(), workSiteChief.get(), staff, workSiteRequest.get());
-
+        WorkSite newWorkSite = new WorkSite(workSiteDTO.getBegin(), workSiteDTO.getEnd(), workSiteChief.get(), staff,
+                workSiteRequest.get());
 
         // create ToolUsages
         Set<ToolUsage> equipments = new HashSet<>();
-        for(String toolName : workSiteDTO.getEquipments().keySet()) {
+        for (String toolName : workSiteDTO.getEquipments().keySet()) {
             Optional<Tool> tool = toolDAO.findById(toolName);
-            if(!tool.isPresent()){
+            if (!tool.isPresent()) {
                 LOGGER.info("tool " + toolName + " not found");
                 throw new ResponseStatusException(HttpStatus.NOT_FOUND);
             }
-            
+
             equipments.add(new ToolUsage(tool.get(), newWorkSite, workSiteDTO.getEquipments().get(toolName)));
         }
 
         workSiteDAO.save(newWorkSite);
 
         // save ToolUsages
-        for(ToolUsage toolUsage : equipments) {
+        for (ToolUsage toolUsage : equipments) {
             toolUsageDAO.save(toolUsage);
         }
 
@@ -172,14 +172,12 @@ public class WorkSiteController {
     @RequestMapping(value = "/{id}/upload_signature_and_satisfaction", method = RequestMethod.PATCH)
     @CrossOrigin
     @ResponseBody
-    @Operation(
-        tags = {"WorkSite"},
-        description = "Set signature and satisfaction"
-    )
-    public void uploadSignatureAndSatisfaction(@PathVariable UUID id, @RequestParam("image") MultipartFile signature, @RequestParam("satisfaction") SatisfactionLevel satisfaction){
+    @Operation(tags = { "WorkSite" }, description = "Set signature and satisfaction")
+    public void uploadSignatureAndSatisfaction(@PathVariable UUID id, @RequestParam("image") MultipartFile signature,
+            @RequestParam("satisfaction") SatisfactionLevel satisfaction) {
 
         WorkSite workSite = findWorkSite(id);
- 
+
         try {
             workSite.setSignature(signature.getBytes());
             workSite.setSatisfaction(satisfaction);
@@ -194,11 +192,8 @@ public class WorkSiteController {
     @RequestMapping(value = "/{id}/update_status", method = RequestMethod.PATCH)
     @CrossOrigin
     @ResponseBody
-    @Operation(
-        tags = {"WorkSite"},
-        description = "Update status of a work site"
-    )
-    public void updateStatus(@PathVariable UUID id, @RequestParam("status") WorkSiteStatus status){
+    @Operation(tags = { "WorkSite" }, description = "Update status of a work site")
+    public void updateStatus(@PathVariable UUID id, @RequestParam("status") WorkSiteStatus status) {
 
         WorkSite workSite = findWorkSite(id);
 
@@ -210,12 +205,13 @@ public class WorkSiteController {
     @CrossOrigin
     @ResponseBody
     @Operation(tags = { "WorkSite" }, description = "Apply incident to worksite")
-    public IncidentData addIncident(@PathVariable UUID id, @RequestBody IncidentDTO incidentDTO){
+    public IncidentData addIncident(@PathVariable UUID id, @RequestBody IncidentDTO incidentDTO) {
         LOGGER.info("REST request to declare incident " + incidentDTO + " to workSite " + id);
 
         WorkSite workSite = findWorkSite(id);
 
-        Incident incident = new Incident(workSite, incidentDTO.getLevel(), incidentDTO.getTitle(), incidentDTO.getDescription());
+        Incident incident = new Incident(workSite, incidentDTO.getLevel(), incidentDTO.getTitle(),
+                incidentDTO.getDescription());
         workSite.addIncident(incident);
         workSiteDAO.save(workSite);
         incidentDAO.save(incident);
@@ -228,58 +224,58 @@ public class WorkSiteController {
     @CrossOrigin
     @ResponseBody
     @Operation(tags = { "WorkSite" }, description = "Add evidence to an incident")
-    public IncidentData addEvidence(@PathVariable UUID id, @RequestPart("evidence") MultipartFile evidence){
+    public IncidentData addEvidence(@PathVariable UUID id, @RequestPart("evidence") MultipartFile evidence) {
         LOGGER.info("REST request to add evidence to incident " + id);
 
         Optional<Incident> incident = incidentDAO.findById(id);
-        if(!incident.isPresent()) {
+        if (!incident.isPresent()) {
             LOGGER.info("incident " + id + " not found");
             throw new ResponseStatusException(HttpStatus.NOT_FOUND);
         }
 
         Incident foundIncident = incident.get();
         try {
-			foundIncident.addEvidence(evidence.getBytes());
-		} catch (IOException e) {
-			LOGGER.warning("Access error on uploaded file");
+            foundIncident.addEvidence(evidence.getBytes());
+        } catch (IOException e) {
+            LOGGER.warning("Access error on uploaded file");
             e.printStackTrace();
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR);
-		}
+        }
 
         incidentDAO.save(foundIncident);
         return new IncidentData(foundIncident);
 
     }
-    
 
     @RequestMapping(value = "/{id}/incidents", method = RequestMethod.GET)
     @CrossOrigin
     @ResponseBody
     @Operation(tags = { "WorkSite" }, description = "Get worksite's incidents")
-    public Set<IncidentData> getWorkSiteIncidents(@PathVariable UUID id){
+    public Set<IncidentData> getWorkSiteIncidents(@PathVariable UUID id) {
         LOGGER.info("REST request get incident for worksite " + id);
         findWorkSite(id);
 
         Set<IncidentData> incidents = new HashSet<>();
-        for(Incident incident : workSiteDAO.findIncidentById(id)) {
+        for (Incident incident : workSiteDAO.findIncidentById(id)) {
             incidents.add(new IncidentData(incident));
         }
 
         return incidents;
     }
 
-
     @RequestMapping(value = "/{id}/invoice", method = RequestMethod.PUT)
     @CrossOrigin
     @ResponseBody
-    @Operation(tags = { "WorkSite" }, description ="Apply invoice to worksite")
-    public void addInvoice(@PathVariable UUID id, @RequestPart("invoice") InvoiceDTO invoiceDTO, @RequestPart("file") MultipartFile file){
+    @Operation(tags = { "WorkSite" }, description = "Apply invoice to worksite")
+    public void addInvoice(@PathVariable UUID id, @RequestPart("invoice") InvoiceDTO invoiceDTO,
+            @RequestPart("file") MultipartFile file) {
         LOGGER.info("REST request to apply invoice " + invoiceDTO + " to workSite " + id);
 
         WorkSite workSite = findWorkSite(id);
 
         try {
-            Invoice invoice = new Invoice(workSite, file.getBytes(), invoiceDTO.getTitle(), invoiceDTO.getDescription(), invoiceDTO.getAmount());
+            Invoice invoice = new Invoice(workSite, file.getBytes(), invoiceDTO.getTitle(), invoiceDTO.getDescription(),
+                    invoiceDTO.getAmount());
             workSite.addInvoice(invoice);
             workSiteDAO.save(workSite);
             invoiceDAO.save(invoice);
