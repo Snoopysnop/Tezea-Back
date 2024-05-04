@@ -16,7 +16,7 @@ import lombok.Data;
 @Data
 public class WorkSiteDTO implements Serializable {
 
-    private UUID workSiteRequest;
+    private Integer workSiteRequest;
     private UUID workSiteChief;
     private LocalDateTime begin;
     private LocalDateTime end;
