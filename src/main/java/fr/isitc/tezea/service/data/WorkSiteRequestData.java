@@ -1,5 +1,6 @@
 package fr.isitc.tezea.service.data;
 
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 import fr.isitc.tezea.model.WorkSiteRequest;
@@ -14,10 +15,12 @@ public class WorkSiteRequestData extends WorkSiteRequestDTO {
 
     private UUID id;
     private RequestStatus status;
+    private LocalDateTime creationDate;
 
     public WorkSiteRequestData(WorkSiteRequest workSiteRequest) {
         super(workSiteRequest);
         this.id = workSiteRequest.getId();
         this.status = workSiteRequest.getStatus();
+        this.creationDate = workSiteRequest.getCreationDate();
     }
 }
