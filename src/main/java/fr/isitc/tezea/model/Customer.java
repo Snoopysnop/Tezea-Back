@@ -84,4 +84,17 @@ public class Customer implements Serializable {
         this.requests.add(workSiteRequest);
     }
 
+    public void patch(CustomerDTO customerDTO) {
+        this.firstName = customerDTO.getFirstName();
+        this.lastName = customerDTO.getLastName();
+        this.civility = customerDTO.getCivility();
+        this.email = customerDTO.getEmail();
+        this.phoneNumber = customerDTO.getPhoneNumber();
+        this.address = customerDTO.getAddress();
+        this.city = customerDTO.getCity();
+        this.postalCode = customerDTO.getPostalCode();
+        this.status = customerDTO.getStatus();
+        this.company = customerDTO.getCompany();
+    }
+
 }
