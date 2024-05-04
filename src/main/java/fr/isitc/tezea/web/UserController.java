@@ -1,8 +1,10 @@
 package fr.isitc.tezea.web;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.UUID;
 import java.util.logging.Logger;
 
@@ -18,9 +20,13 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
 import fr.isitc.tezea.DAO.UserDAO;
+import fr.isitc.tezea.DAO.WorkSiteDAO;
 import fr.isitc.tezea.model.User;
+import fr.isitc.tezea.model.WorkSite;
+import fr.isitc.tezea.model.enums.Role;
 import fr.isitc.tezea.service.DTO.UserDTO;
 import fr.isitc.tezea.service.data.UserData;
+import fr.isitc.tezea.utils.TimeLine;
 import io.swagger.v3.oas.annotations.Operation;
 
 
@@ -32,6 +38,9 @@ public class UserController {
 
     @Autowired
     private UserDAO userDAO;
+
+    @Autowired
+    private WorkSiteDAO workSiteDAO;
 
     @RequestMapping(method = RequestMethod.GET)
     @CrossOrigin
@@ -75,6 +84,66 @@ public class UserController {
         User user = new User(userDTO);
         userDAO.save(user);
         return new UserData(user);
+    }
+
+    @RequestMapping(value = "/{role}", method=RequestMethod.POST)
+    @CrossOrigin
+    @ResponseBody
+    @Operation(tags = { "User" }, description = "Find users by role")
+    public Set<UserData> findbyRole(@RequestBody Role role){
+        LOGGER.info("REST request to find users with role" + role);
+
+        Set<UserData> users = new HashSet<>();
+
+        for(User user : userDAO.findByRole(role)){
+            users.add(new UserData(user));
+        }
+
+        return users;
+    }
+
+    @RequestMapping(value = "/staff/availabilities", method=RequestMethod.POST)
+    @CrossOrigin
+    @ResponseBody
+    @Operation(tags = { "User" }, description = "Find available staff")
+    public Set<UserData> getAvailableStaff(@RequestBody TimeLine timeLine) {
+        LOGGER.info("REST request to find employees available between " + timeLine.getBegin() + " and " + timeLine.getEnd());
+
+        Set<User> users = userDAO.findByRole(Role.Employee);
+
+        Set<WorkSite> workSites = workSiteDAO.findWorkSiteBetweenDate(timeLine.getBegin(), timeLine.getEnd());
+        for(WorkSite workSite : workSites) {
+            users.removeAll(workSite.getStaff());
+        }
+
+        Set<UserData> availableStaff = new HashSet<>();
+        for(User user : users) {
+            availableStaff.add(new UserData(user));
+        }
+
+        return availableStaff;
+    }
+
+    @RequestMapping(value = "/workSiteChiefs/availabilities", method=RequestMethod.POST)
+    @CrossOrigin
+    @ResponseBody
+    @Operation(tags = { "User" }, description = "Find available worksite chiefs")
+    public Set<UserData> getAvailableWorkSiteChiefs(@RequestBody TimeLine timeLine) {
+        LOGGER.info("REST request to find employees available between " + timeLine.getBegin() + " and " + timeLine.getEnd());
+
+        Set<User> users = userDAO.findByRole(Role.WorkSiteChief);
+
+        Set<WorkSite> workSites = workSiteDAO.findWorkSiteBetweenDate(timeLine.getBegin(), timeLine.getEnd());
+        for(WorkSite workSite : workSites) {
+            users.remove(workSite.getWorkSiteChief());
+        }
+
+        Set<UserData> availableWorkSiteChiefs = new HashSet<>();
+        for(User user : users) {
+            availableWorkSiteChiefs.add(new UserData(user));
+        }
+
+        return availableWorkSiteChiefs;
     }
 
 }

@@ -2,8 +2,10 @@ package fr.isitc.tezea.web;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.logging.Logger;
@@ -91,10 +93,10 @@ public class ToolController {
         return toolDTO;
     }
 
-    @RequestMapping(value = "/{name}/availability", method = RequestMethod.POST)
+    @RequestMapping(value = "/{name}/availabilities", method = RequestMethod.POST)
     @CrossOrigin
-    @Operation(tags = { "Tool" }, description = "Returns the number of availability for tool with the name at specified timeline")
-    public int numberOfAvailabilityAtTimeline(@PathVariable String name, @RequestBody TimeLine timeLine) {
+    @Operation(tags = { "Tool" }, description = "Returns the number of availabilities for tool with the name at specified timeline")
+    public int numberOfAvailabilitiesAtTimeline(@PathVariable String name, @RequestBody TimeLine timeLine) {
         LOGGER.info("REST request to get the availability for tool " + name + " between " + timeLine.getBegin() + " and " + timeLine.getEnd());
 
         Optional<Tool> tool = toolDAO.findById(name);
@@ -133,6 +135,20 @@ public class ToolController {
         }
     
         return availability - maxUses;
+    }
+
+    @RequestMapping(value = "/availabilities", method = RequestMethod.POST)
+    @CrossOrigin
+    @Operation(tags = { "Tool" }, description = "Returns the availabilities for all tools at specified timeline")
+    public Map<String, Integer> getAvailabilities(@RequestBody TimeLine timeLine){
+        LOGGER.info("REST request to get tools availabilities between " + timeLine.getBegin() + " and " + timeLine.getEnd());
+
+        Map<String, Integer> availabilities = new HashMap<>();
+        for(Tool tool : toolDAO.findAll()){
+            availabilities.put(tool.getName(), numberOfAvailabilitiesAtTimeline(tool.getName(), timeLine));
+        }
+
+        return availabilities;
     }
 
 }
