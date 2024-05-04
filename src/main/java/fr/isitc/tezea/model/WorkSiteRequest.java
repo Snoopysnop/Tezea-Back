@@ -6,12 +6,12 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 
 import fr.isitc.tezea.model.enums.Category;
 import fr.isitc.tezea.model.enums.Emergency;
 import fr.isitc.tezea.model.enums.RequestStatus;
 import fr.isitc.tezea.model.enums.Service;
-import fr.isitc.tezea.service.DTO.WorkSiteRequestDTO;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -87,11 +87,21 @@ public class WorkSiteRequest implements Serializable {
     @Column(name = "chrono_quote")
     private boolean chronoQuote;
 
-    @Column(name = "creationDate")
-    private LocalDateTime creationDate;
+    @Column(name = "date")
+    @JsonFormat(pattern = "yyy-MM-dd", shape = JsonFormat.Shape.STRING)
+    private LocalDateTime date;
 
-    @Column(name = "hour-estimatedDate")
-    private LocalDateTime estimatedDate;
+    @Column(name = "hour_departure")
+    @JsonFormat(pattern = "HH:mm:ss", shape = JsonFormat.Shape.STRING)
+    private LocalDateTime hourDeparture;
+
+    @Column(name = "hour_arrival")
+    @JsonFormat(pattern = "HH:mm:ss", shape = JsonFormat.Shape.STRING)
+    private LocalDateTime hourArrival;
+
+    @Column(name = "hour-return_deposit")
+    @JsonFormat(pattern = "HH:mm:ss", shape = JsonFormat.Shape.STRING)
+    private LocalDateTime hourReturnDeposit;
 
     @Column(name = "weight_estimate")
     private int weightEstimate;
@@ -108,27 +118,33 @@ public class WorkSiteRequest implements Serializable {
     protected WorkSiteRequest() {
     }
 
-    public WorkSiteRequest(User concierge, User siteChief, Customer customer, WorkSiteRequestDTO workSiteRequestDTO) {
+    public WorkSiteRequest(User concierge, User siteChief, Customer customer, String city, Service serviceType,
+            String description, Emergency emergency, RequestStatus status, String title, Category category,
+            boolean removal, boolean delivery, boolean removalRecycling, boolean chronoQuote, LocalDateTime date,
+            LocalDateTime hourDeparture, LocalDateTime hourArrival, LocalDateTime hourReturnDeposit, int weightEstimate,
+            int volumeEstimate, String provider, String tezeaAffectation) {
         this.concierge = concierge;
         this.siteChief = siteChief;
         this.customer = customer;
-        this.city = workSiteRequestDTO.getCity();
-        this.serviceType = workSiteRequestDTO.getServiceType();
-        this.description = workSiteRequestDTO.getDescription();
-        this.emergency = workSiteRequestDTO.getEmergency();
-        this.status = RequestStatus.New;
-        this.title = workSiteRequestDTO.getTitle();
-        this.category = workSiteRequestDTO.getCategory();
-        this.removal = workSiteRequestDTO.isRemoval();
-        this.delivery = workSiteRequestDTO.isDelivery();
-        this.removalRecycling = workSiteRequestDTO.isRemovalRecycling();
-        this.chronoQuote = workSiteRequestDTO.isChronoQuote();
-        this.estimatedDate = workSiteRequestDTO.getEstimatedDate();
-        this.creationDate = LocalDateTime.now();
-        this.weightEstimate = workSiteRequestDTO.getWeightEstimate();
-        this.volumeEstimate = workSiteRequestDTO.getWeightEstimate();
-        this.provider = workSiteRequestDTO.getProvider();
-        this.tezeaAffectation = workSiteRequestDTO.getTezeaAffectation();
+        this.city = city;
+        this.serviceType = serviceType;
+        this.description = description;
+        this.emergency = emergency;
+        this.status = status;
+        this.title = title;
+        this.category = category;
+        this.removal = removal;
+        this.delivery = delivery;
+        this.removalRecycling = removalRecycling;
+        this.chronoQuote = chronoQuote;
+        this.date = date;
+        this.hourDeparture = hourDeparture;
+        this.hourArrival = hourArrival;
+        this.hourReturnDeposit = hourReturnDeposit;
+        this.weightEstimate = weightEstimate;
+        this.volumeEstimate = volumeEstimate;
+        this.provider = provider;
+        this.tezeaAffectation = tezeaAffectation;
     }
 
 }

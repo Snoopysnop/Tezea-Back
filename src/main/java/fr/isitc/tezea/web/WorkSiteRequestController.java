@@ -98,8 +98,19 @@ public class WorkSiteRequestController {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND);
         }
 
+        RequestStatus status = RequestStatus.New;
+
         WorkSiteRequest newWorkSiteRequest = new WorkSiteRequest(concierge.get(), siteChief.get(), customer.get(),
-                workSiteRequestDTO);
+                workSiteRequestDTO.getCity(), workSiteRequestDTO.getServiceType(),
+                workSiteRequestDTO.getDescription(), workSiteRequestDTO.getEmergency(), status,
+                workSiteRequestDTO.getTitle(), workSiteRequestDTO.getCategory(),
+                workSiteRequestDTO.isRemoval(), workSiteRequestDTO.isDelivery(),
+                workSiteRequestDTO.isRemovalRecycling(), workSiteRequestDTO.isChronoQuote(),
+                workSiteRequestDTO.getDate(),
+                workSiteRequestDTO.getHourDeparture(), workSiteRequestDTO.getHourArrival(),
+                workSiteRequestDTO.getHourReturnDeposit(), workSiteRequestDTO.getWeightEstimate(),
+                workSiteRequestDTO.getVolumeEstimate(), workSiteRequestDTO.getProvider(),
+                workSiteRequestDTO.getTezeaAffectation());
 
         workSiteRequestDAO.save(newWorkSiteRequest);
         return new WorkSiteRequestData(newWorkSiteRequest);
