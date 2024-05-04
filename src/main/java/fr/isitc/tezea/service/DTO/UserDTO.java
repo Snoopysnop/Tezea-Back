@@ -26,4 +26,5 @@ public class UserDTO implements Serializable {
         this.email = user.getEmail();
         this.phoneNumber = user.getPhoneNumber();
     }
+    
 }

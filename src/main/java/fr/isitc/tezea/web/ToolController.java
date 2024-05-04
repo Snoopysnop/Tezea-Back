@@ -28,7 +28,7 @@ import fr.isitc.tezea.utils.TimeLine;
 import io.swagger.v3.oas.annotations.Operation;
 
 @RestController
-@RequestMapping(value = "/api/tools")
+@RequestMapping(value = "/tools")
 public class ToolController {
 
     private static final Logger LOGGER = Logger.getLogger(ToolController.class.getName());

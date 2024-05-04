@@ -30,7 +30,7 @@ import fr.isitc.tezea.service.data.WorkSiteRequestData;
 import io.swagger.v3.oas.annotations.Operation;
 
 @RestController
-@RequestMapping(value = "/api/workSiteRequests")
+@RequestMapping(value = "/workSiteRequests")
 public class WorkSiteRequestController {
 
     private static final Logger LOGGER = Logger.getLogger(WorkSiteRequestController.class.getName());
