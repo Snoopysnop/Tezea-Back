@@ -93,7 +93,7 @@ public class ToolController {
         return toolDTO;
     }
 
-    @RequestMapping(value = "/{name}/availabilities", method = RequestMethod.POST)
+    @RequestMapping(value = "/{name}/availabilities", method = RequestMethod.GET)
     @CrossOrigin
     @Operation(tags = {
             "Tool" }, description = "Returns the number of availabilities for tool with the name at specified timeline")
@@ -139,7 +139,7 @@ public class ToolController {
         return availability - maxUses;
     }
 
-    @RequestMapping(value = "/availabilities", method = RequestMethod.POST)
+    @RequestMapping(value = "/availabilities", method = RequestMethod.GET)
     @CrossOrigin
     @Operation(tags = { "Tool" }, description = "Returns the availabilities for all tools at specified timeline")
     public Map<String, Integer> getAvailabilities(@RequestBody TimeLine timeLine) {
