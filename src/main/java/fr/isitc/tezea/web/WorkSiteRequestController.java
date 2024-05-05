@@ -1,7 +1,10 @@
 package fr.isitc.tezea.web;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.logging.Logger;
@@ -25,7 +28,10 @@ import fr.isitc.tezea.DAO.UserDAO;
 import fr.isitc.tezea.model.Customer;
 import fr.isitc.tezea.model.User;
 import fr.isitc.tezea.model.WorkSiteRequest;
+import fr.isitc.tezea.model.enums.CustomerStatus;
 import fr.isitc.tezea.model.enums.RequestStatus;
+import fr.isitc.tezea.model.enums.Role;
+import fr.isitc.tezea.model.enums.Service;
 import fr.isitc.tezea.service.DTO.WorkSiteRequestDTO;
 import fr.isitc.tezea.service.data.WorkSiteRequestData;
 import io.swagger.v3.oas.annotations.Operation;
@@ -133,5 +139,83 @@ public class WorkSiteRequestController {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+
+
+    @RequestMapping(value = "/statistics/status", method = RequestMethod.GET)
+    @CrossOrigin
+    @ResponseBody
+    @Operation(tags = { "WorkSiteRequest" }, description = "Get number of worksite request by status")
+    public Map<RequestStatus, Integer> getStatusStatistics(){
+        LOGGER.info(("REST request to get status statistics"));
+
+        Map<RequestStatus, Integer> statistics = new HashMap<>();
+        for(RequestStatus status : RequestStatus.values()) {
+            statistics.put(status, workSiteRequestDAO.findByStatus(status).size());
+        }
+
+        return statistics;
+    }
+
+    @RequestMapping(value = "/statistics/cities", method = RequestMethod.GET)
+    @CrossOrigin
+    @ResponseBody
+    @Operation(tags = { "WorkSiteRequest" }, description = "Get number of worksite request by cites")
+    public Map<String, Integer> getCitiesStatistics(){
+        LOGGER.info("REST request to get cities statistics");
+
+        Map<String, Integer> statistics = new HashMap<>();
+        for(String city : workSiteRequestDAO.findAllCities()) {
+            statistics.put(city, workSiteRequestDAO.findByCity(city).size());
+        }
+
+        return statistics;
+    }
+
+
+    @RequestMapping(value = "/statistics/services", method = RequestMethod.GET)
+    @CrossOrigin
+    @ResponseBody
+    @Operation(tags = { "WorkSiteRequest" }, description = "Get number of worksite request by service types")
+    public Map<Service, Integer> getServicesStatistics(){
+        LOGGER.info("REST request to get service types statistics");
+
+        Map<Service, Integer> statistics = new HashMap<>();
+        for(Service serviceType : Service.values()) {
+            statistics.put(serviceType, workSiteRequestDAO.findByServiceType(serviceType).size());
+        }
+
+        return statistics;
+    }
+
+    @RequestMapping(value = "/statistics/customers", method = RequestMethod.GET)
+    @CrossOrigin
+    @ResponseBody
+    @Operation(tags = { "WorkSiteRequest" }, description = "Get number of worksite request by customer status")
+    public Map<CustomerStatus, Integer> getCustomerStatistics(){
+        LOGGER.info("REST request to get customer status statistics");
+
+        Map<CustomerStatus, Integer> statistics = new HashMap<>();
+        for(CustomerStatus customerStatus : CustomerStatus.values()) {
+            statistics.put(customerStatus, workSiteRequestDAO.findByCustomerStatus(customerStatus).size());
+        }
+
+        return statistics;
+    }
+
+    @RequestMapping(value = "/statistics/concierges", method = RequestMethod.GET)
+    @CrossOrigin
+    @ResponseBody
+    @Operation(tags = { "WorkSiteRequest" }, description = "Get number of worksite request by cites")
+    public Map<UUID, Integer> getConciergesStatistics(){
+        LOGGER.info("REST request to get concierges statistics");
+
+        Map<UUID, Integer> statistics = new HashMap<>();
+        for(User concierge : userDAO.findByRole(Role.Concierge)) {
+            statistics.put(concierge.getId(), workSiteRequestDAO.findByConcierge(concierge).size());
+        }
+
+        return statistics;
+    }
+
 
 }

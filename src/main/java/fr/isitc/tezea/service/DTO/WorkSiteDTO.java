@@ -34,9 +34,6 @@ public class WorkSiteDTO implements Serializable {
         if(workSite.getStaff() != null){
             workSite.getStaff().forEach(employee -> staff.add(employee.getId()));
         }
-        if(workSite.getEquipments() != null) {
-            workSite.getEquipments().forEach(tool -> equipments.put(tool.getTool().getName(), tool.getQuantity()));
-        }
         
     }
 
