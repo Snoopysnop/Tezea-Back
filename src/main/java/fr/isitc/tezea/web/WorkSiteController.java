@@ -1,7 +1,9 @@
 package fr.isitc.tezea.web;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.io.IOException;
 import java.util.Optional;
@@ -10,6 +12,7 @@ import java.util.UUID;
 import java.util.logging.Logger;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -98,11 +101,13 @@ public class WorkSiteController {
     @CrossOrigin
     @ResponseBody
     @Operation(tags = { "WorkSite" }, description = "Returns all work sites")
-    public Set<WorkSiteData> findAll() {
+    public List<WorkSiteData> findAll() {
         LOGGER.info("REST request to get all work sites");
 
-        Set<WorkSiteData> workSites = new HashSet<>();
-        for(WorkSite workSite : workSiteDAO.findAll()){
+        List<WorkSiteData> workSites = new ArrayList<>();
+        Sort sort = Sort.by(Sort.Direction.ASC, "begin");
+
+        for(WorkSite workSite : workSiteDAO.findAll(sort)){
             WorkSiteData data =  new WorkSiteData(workSite);
             data.setEquipments(getWorkSiteEquipments(workSite));
             workSites.add(data);
