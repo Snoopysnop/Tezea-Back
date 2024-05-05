@@ -9,6 +9,7 @@ import org.springframework.data.jpa.repository.Query;
 
 import fr.isitc.tezea.model.Tool;
 import fr.isitc.tezea.model.ToolUsage;
+import fr.isitc.tezea.model.WorkSite;
 import jakarta.transaction.Transactional;
 
 @Transactional
@@ -19,5 +20,7 @@ public interface ToolUsageDAO extends JpaRepository<ToolUsage, UUID> {
 
     @Query("Select tu from ToolUsage tu where tu.tool = ?1 and ((tu.workSite.begin >= ?2 and tu.workSite.begin <= ?3) or (tu.workSite.end >= ?2 and tu.workSite.end <= ?3))")
     public Set<ToolUsage> findByToolBetweenDates(Tool tool, LocalDateTime begin, LocalDateTime end);
+
+    public Set<ToolUsage> findByWorkSite(WorkSite workSite);
 
 }

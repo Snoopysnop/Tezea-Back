@@ -1,6 +1,8 @@
 package fr.isitc.tezea.web;
 
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.io.IOException;
 import java.util.Optional;
 import java.util.Set;
@@ -83,6 +85,14 @@ public class WorkSiteController {
         return workSite.get();
     }
 
+    private Map<String, Integer> getWorkSiteEquipments(WorkSite workSite) {
+        Map<String, Integer> equipments = new HashMap<>();
+            for(ToolUsage tu : toolUsageDAO.findByWorkSite(workSite)) {
+                equipments.put(tu.getTool().getName(), tu.getQuantity());
+            }
+        return equipments;
+    }
+
     @RequestMapping(method = RequestMethod.GET)
     @CrossOrigin
     @ResponseBody
@@ -91,8 +101,10 @@ public class WorkSiteController {
         LOGGER.info("REST request to get all work sites");
 
         Set<WorkSiteData> workSites = new HashSet<>();
-        for (WorkSite workSite : workSiteDAO.findAll()) {
-            workSites.add(new WorkSiteData(workSite));
+        for(WorkSite workSite : workSiteDAO.findAll()){
+            WorkSiteData data =  new WorkSiteData(workSite);
+            data.setEquipments(getWorkSiteEquipments(workSite));
+            workSites.add(data);
         }
 
         return workSites;
@@ -104,14 +116,11 @@ public class WorkSiteController {
     @Operation(tags = { "WorkSite" }, description = "Returns the work site {id}")
     public WorkSiteData findById(@PathVariable UUID id) {
 
-        WorkSite worksite;
-        try {
-            worksite = workSiteDAO.findById(id).get();
-        } catch (Exception exception) {
-            LOGGER.info("Work site " + id + " not found");
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
-        }
-        return new WorkSiteData(worksite);
+        WorkSite worksite = findWorkSite(id);
+        WorkSiteData data =  new WorkSiteData(worksite);
+
+        data.setEquipments(getWorkSiteEquipments(worksite));
+        return data;
     }
 
     @RequestMapping(value = "/create", method = RequestMethod.POST)
