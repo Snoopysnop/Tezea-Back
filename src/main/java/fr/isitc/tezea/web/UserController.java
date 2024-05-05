@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
+import fr.isitc.tezea.DAO.IncidentDAO;
 import fr.isitc.tezea.DAO.UserDAO;
 import fr.isitc.tezea.DAO.WorkSiteDAO;
 import fr.isitc.tezea.model.User;
@@ -45,6 +46,9 @@ public class UserController {
 
     @Autowired
     private WorkSiteDAO workSiteDAO;
+
+    @Autowired
+    private IncidentDAO incidentDAO;
 
     private User findUser(UUID id){
         Optional<User> user = userDAO.findById(id);
@@ -241,7 +245,11 @@ public class UserController {
 
         for(WorkSite workSite : workSiteDAO.findByWorkSiteChief(user)) {
             WorkSiteRequestData request = new WorkSiteRequestData(workSite.getRequest());
-            datas.add(new WorkSiteAndRequestData(new WorkSiteData(workSite), request));
+
+            // check if workSite has incidents
+            boolean hasIncidents = !incidentDAO.findByWorkSite(workSite).isEmpty();
+
+            datas.add(new WorkSiteAndRequestData(new WorkSiteData(workSite), request, hasIncidents));
         }
         
         return datas;

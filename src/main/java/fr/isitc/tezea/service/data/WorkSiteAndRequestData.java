@@ -25,9 +25,10 @@ public class WorkSiteAndRequestData implements Serializable {
     private SatisfactionLevel satisfaction;
     private WorkSiteStatus status;
     private byte[] signature;
+    private boolean hasIncidents;
 
     
-    public WorkSiteAndRequestData(WorkSiteData worksite, WorkSiteRequestData request) {
+    public WorkSiteAndRequestData(WorkSiteData worksite, WorkSiteRequestData request, boolean hasIncidents) {
         this.workSiteRequest = request;
 
         this.workSiteChief = worksite.getWorkSiteChief();
@@ -39,6 +40,7 @@ public class WorkSiteAndRequestData implements Serializable {
         this.satisfaction = worksite.getSatisfaction();
         this.status = worksite.getStatus();
         this.signature = worksite.getSignature();
+        this.hasIncidents = hasIncidents;
         
     }
 
