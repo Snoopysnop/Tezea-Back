@@ -73,23 +73,33 @@ public class WorkSite implements Serializable {
     @Column(name = "signature")
     private byte[] signature;
 
-    public WorkSite(LocalDateTime begin, LocalDateTime end, User workSiteChief, Set<User> staff, WorkSiteRequest request) {
+    @Column(name = "address")
+    private String address;
+
+    @Column(name = "title")
+    private String title;
+
+    public WorkSite(LocalDateTime begin, LocalDateTime end, User workSiteChief, Set<User> staff, String address,
+            String title,
+            WorkSiteRequest request) {
         this.begin = begin;
         this.end = end;
         this.workSiteChief = workSiteChief;
         this.staff = staff;
         this.request = request;
+        this.address = address;
+        this.title = title;
     }
 
     protected WorkSite() {
 
     }
 
-    public void addIncident(Incident incident){
+    public void addIncident(Incident incident) {
         this.incidents.add(incident);
     }
 
-    public void addInvoice(Invoice invoice){
+    public void addInvoice(Invoice invoice) {
         this.invoices.add(invoice);
     }
 

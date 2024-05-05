@@ -5,7 +5,6 @@ import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
 
-
 import fr.isitc.tezea.model.enums.Category;
 import fr.isitc.tezea.model.enums.Emergency;
 import fr.isitc.tezea.model.enums.RequestStatus;
@@ -116,7 +115,7 @@ public class WorkSiteRequest implements Serializable {
         this.serviceType = workSiteRequestDTO.getServiceType();
         this.description = workSiteRequestDTO.getDescription();
         this.emergency = workSiteRequestDTO.getEmergency();
-        this.status = RequestStatus.New;
+        this.status = RequestStatus.ToComplete;
         this.title = workSiteRequestDTO.getTitle();
         this.category = workSiteRequestDTO.getCategory();
         this.removal = workSiteRequestDTO.isRemoval();

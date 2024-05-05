@@ -154,7 +154,13 @@ public class WorkSiteController {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
         }
 
-        WorkSite newWorkSite = new WorkSite(workSiteDTO.getBegin(), workSiteDTO.getEnd(), workSiteChief.get(), staff,
+        WorkSite newWorkSite = new WorkSite(
+                workSiteDTO.getBegin(),
+                workSiteDTO.getEnd(),
+                workSiteChief.get(),
+                staff,
+                workSiteDTO.getAddress(),
+                workSiteDTO.getTitle(),
                 workSiteRequest.get());
 
         // create ToolUsages

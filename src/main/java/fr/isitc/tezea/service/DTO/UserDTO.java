@@ -14,17 +14,19 @@ public class UserDTO implements Serializable {
     private Role role;
     private String email;
     private String phoneNumber;
+    private byte[] profilePicture;
 
     protected UserDTO() {
 
     }
 
-    public UserDTO(User user){
+    public UserDTO(User user) {
         this.firstName = user.getFirstName();
         this.lastName = user.getLastName();
         this.role = user.getRole();
         this.email = user.getEmail();
         this.phoneNumber = user.getPhoneNumber();
+        this.profilePicture = user.getProfilePicture();
     }
-    
+
 }

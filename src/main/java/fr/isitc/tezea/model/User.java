@@ -57,6 +57,9 @@ public class User implements Serializable {
     @OneToMany(mappedBy = "workSiteChief")
     private Set<WorkSite> ownedWorkSites = new HashSet<>();
 
+    @Column(name = "profilePicture")
+    private byte[] profilePicture;
+
     protected User() {
 
     }
@@ -67,14 +70,17 @@ public class User implements Serializable {
         this.role = userDTO.getRole();
         this.email = userDTO.getEmail();
         this.phoneNumber = userDTO.getPhoneNumber();
+        this.profilePicture = userDTO.getProfilePicture();
+
     }
 
     public boolean addWorkSite(WorkSite workSite) {
 
         // check conflicts
         TimeLine timeLine = new TimeLine(workSite.getBegin(), workSite.getEnd());
-        for(WorkSite userWorkSites : this.workSites){
-            if(TimeLine.areTimelineInConcurrence(timeLine, new TimeLine(userWorkSites.getBegin(), userWorkSites.getEnd()))){
+        for (WorkSite userWorkSites : this.workSites) {
+            if (TimeLine.areTimelineInConcurrence(timeLine,
+                    new TimeLine(userWorkSites.getBegin(), userWorkSites.getEnd()))) {
                 return false;
             }
         }
