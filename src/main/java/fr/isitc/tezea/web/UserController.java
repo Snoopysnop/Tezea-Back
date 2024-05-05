@@ -143,7 +143,7 @@ public class UserController {
     @CrossOrigin
     @ResponseBody
     @Operation(tags = { "User" }, description = "Find available staff")
-    public Set<UserData> getAvailableStaff(@RequestParam TimeLine timeLine) {
+    public Set<UserData> getAvailableStaff(@RequestBody TimeLine timeLine) {
         LOGGER.info("REST request to find employees available between " + timeLine.getBegin() + " and "
                 + timeLine.getEnd());
 
@@ -166,7 +166,7 @@ public class UserController {
     @CrossOrigin
     @ResponseBody
     @Operation(tags = { "WorkSiteChief" }, description = "Find available worksite chiefs")
-    public Set<UserData> getAvailableWorkSiteChiefs(@RequestParam TimeLine timeLine) {
+    public Set<UserData> getAvailableWorkSiteChiefs(@RequestBody TimeLine timeLine) {
         LOGGER.info("REST request to find employees available between " + timeLine.getBegin() + " and "
                 + timeLine.getEnd());
 

@@ -17,7 +17,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
@@ -143,7 +142,7 @@ public class ToolController {
     @RequestMapping(value = "/availabilities", method = RequestMethod.GET)
     @CrossOrigin
     @Operation(tags = { "Tool" }, description = "Returns the availabilities for all tools at specified timeline")
-    public Map<String, Integer> getAvailabilities(@RequestParam TimeLine timeLine) {
+    public Map<String, Integer> getAvailabilities(@RequestBody TimeLine timeLine) {
         LOGGER.info("REST request to get tools availabilities between " + timeLine.getBegin() + " and "
                 + timeLine.getEnd());
 
