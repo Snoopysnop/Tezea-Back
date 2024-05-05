@@ -43,6 +43,7 @@ import fr.isitc.tezea.model.enums.WorkSiteStatus;
 import fr.isitc.tezea.service.DTO.IncidentDTO;
 import fr.isitc.tezea.service.DTO.WorkSiteDTO;
 import fr.isitc.tezea.service.data.IncidentData;
+import fr.isitc.tezea.service.data.InvoiceData;
 import fr.isitc.tezea.service.data.WorkSiteData;
 import fr.isitc.tezea.service.DTO.InvoiceDTO;
 
@@ -294,6 +295,22 @@ public class WorkSiteController {
             e.printStackTrace();
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR);
         }
+    }
+
+    @RequestMapping(value = "/{id}/invoices", method = RequestMethod.GET)
+    @CrossOrigin
+    @ResponseBody
+    @Operation(tags = { "WorkSite" }, description = "Get worksite's invoices")
+    public Set<InvoiceData> getWorkSiteInvoices(@PathVariable UUID id) {
+        LOGGER.info("REST request get invoices for worksite " + id);
+        findWorkSite(id);
+
+        Set<InvoiceData> invoices = new HashSet<>();
+        for (Invoice invoice : workSiteDAO.findIncvoicesById(id)) {
+            invoices.add(new InvoiceData(invoice));
+        }
+
+        return invoices;
     }
 
 }

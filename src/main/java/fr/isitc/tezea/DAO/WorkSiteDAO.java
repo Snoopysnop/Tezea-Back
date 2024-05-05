@@ -8,6 +8,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
 import fr.isitc.tezea.model.Incident;
+import fr.isitc.tezea.model.Invoice;
 import fr.isitc.tezea.model.User;
 import fr.isitc.tezea.model.WorkSite;
 import fr.isitc.tezea.model.WorkSiteRequest;
@@ -21,6 +22,9 @@ public interface WorkSiteDAO extends JpaRepository<WorkSite, UUID> {
 
     @Query("Select w.incidents from WorkSite w where w.id = ?1")
     public Set<Incident> findIncidentById(UUID id);
+
+    @Query("Select w.invoices from WorkSite w where w.id = ?1")
+    public Set<Invoice> findIncvoicesById(UUID id);
 
     Set<WorkSite> findByWorkSiteChief(User workSiteChief);
 
