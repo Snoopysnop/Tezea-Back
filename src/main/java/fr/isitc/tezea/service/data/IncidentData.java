@@ -14,11 +14,13 @@ public class IncidentData extends IncidentDTO {
 
     private UUID id;
     private List<byte[]> evidences;
+    private UUID workSiteId;
 
     public IncidentData(Incident incident){
         super(incident);
         this.id = incident.getId();
         this.evidences = incident.getEvidences();
+        this.workSiteId = incident.getWorkSite().getId();
     }
     
 }
