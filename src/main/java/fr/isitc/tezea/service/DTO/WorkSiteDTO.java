@@ -22,6 +22,8 @@ public class WorkSiteDTO implements Serializable {
     private LocalDateTime end;
     private Set<UUID> staff = new HashSet<>();
     private Map<String, Integer> equipments = new HashMap<>();
+    private String address;
+    private String title;
 
     protected WorkSiteDTO() {
     }
@@ -31,10 +33,15 @@ public class WorkSiteDTO implements Serializable {
         this.workSiteChief = workSite.getWorkSiteChief() == null ? null : workSite.getWorkSiteChief().getId();
         this.begin = workSite.getBegin();
         this.end = workSite.getEnd();
-        if(workSite.getStaff() != null){
+        if (workSite.getStaff() != null) {
             workSite.getStaff().forEach(employee -> staff.add(employee.getId()));
         }
-        
+        if (workSite.getEquipments() != null) {
+            workSite.getEquipments().forEach(tool -> equipments.put(tool.getTool().getName(), tool.getQuantity()));
+        }
+        this.address = workSite.getAddress();
+        this.title = workSite.getTitle();
+
     }
 
 }
