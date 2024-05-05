@@ -47,6 +47,7 @@ import fr.isitc.tezea.service.DTO.IncidentDTO;
 import fr.isitc.tezea.service.DTO.WorkSiteDTO;
 import fr.isitc.tezea.service.data.IncidentData;
 import fr.isitc.tezea.service.data.InvoiceData;
+import fr.isitc.tezea.service.data.UserData;
 import fr.isitc.tezea.service.data.WorkSiteData;
 import fr.isitc.tezea.service.DTO.InvoiceDTO;
 
@@ -91,9 +92,9 @@ public class WorkSiteController {
 
     private Map<String, Integer> getWorkSiteEquipments(WorkSite workSite) {
         Map<String, Integer> equipments = new HashMap<>();
-            for(ToolUsage tu : toolUsageDAO.findByWorkSite(workSite)) {
-                equipments.put(tu.getTool().getName(), tu.getQuantity());
-            }
+        for (ToolUsage tu : toolUsageDAO.findByWorkSite(workSite)) {
+            equipments.put(tu.getTool().getName(), tu.getQuantity());
+        }
         return equipments;
     }
 
@@ -107,8 +108,8 @@ public class WorkSiteController {
         List<WorkSiteData> workSites = new ArrayList<>();
         Sort sort = Sort.by(Sort.Direction.ASC, "begin");
 
-        for(WorkSite workSite : workSiteDAO.findAll(sort)){
-            WorkSiteData data =  new WorkSiteData(workSite);
+        for (WorkSite workSite : workSiteDAO.findAll(sort)) {
+            WorkSiteData data = new WorkSiteData(workSite);
             data.setEquipments(getWorkSiteEquipments(workSite));
             workSites.add(data);
         }
@@ -123,10 +124,30 @@ public class WorkSiteController {
     public WorkSiteData findById(@PathVariable UUID id) {
 
         WorkSite worksite = findWorkSite(id);
-        WorkSiteData data =  new WorkSiteData(worksite);
+        WorkSiteData data = new WorkSiteData(worksite);
 
         data.setEquipments(getWorkSiteEquipments(worksite));
         return data;
+    }
+
+    @RequestMapping(value = "/{id}/allUsers", method = RequestMethod.GET)
+    @CrossOrigin
+    @ResponseBody
+    @Operation(tags = { "WorkSite" }, description = "Returns all the users of a work site")
+    public Set<UserData> findAllUsers(@PathVariable UUID id) {
+        LOGGER.info("REST request to get worksite chief and staff of worksite " + id);
+
+        WorkSite workSite = findWorkSite(id);
+
+        Set<UserData> allUsers = new HashSet<>();
+        User workSiteChief = workSite.getWorkSiteChief();
+        Set<User> staff = workSite.getStaff();
+        for (User employee : staff) {
+            allUsers.add(new UserData(employee));
+        }
+        allUsers.add(new UserData(workSiteChief));
+
+        return allUsers;
     }
 
     @RequestMapping(value = "/create", method = RequestMethod.POST)
@@ -288,12 +309,12 @@ public class WorkSiteController {
     @CrossOrigin
     @ResponseBody
     @Operation(tags = { "WorkSite", "Incident" }, description = "Get all incidents")
-    public Set<IncidentData> findAllIncidents(){
+    public Set<IncidentData> findAllIncidents() {
         LOGGER.info("REST request get all incidents");
         Set<IncidentData> data = new HashSet<>();
 
-        for(Set<Incident> incidents : workSiteDAO.findAllIncidents()) {
-            for(Incident incident : incidents){
+        for (Set<Incident> incidents : workSiteDAO.findAllIncidents()) {
+            for (Incident incident : incidents) {
                 data.add(new IncidentData(incident));
             }
         }
