@@ -125,6 +125,16 @@ public class UserController {
         return users;
     }
 
+    @RequestMapping(value = "/Concierge", method = RequestMethod.POST)
+    @CrossOrigin
+    @ResponseBody
+    @Operation(tags = { "Concierge" }, description = "Find a concierge")
+    public UserData findConcierge() {
+        LOGGER.info("REST request to find a concierge");
+
+        return new UserData(userDAO.findFirstByRole(Role.Concierge));
+    }
+
     @RequestMapping(value = "/staff/availabilities", method = RequestMethod.POST)
     @CrossOrigin
     @ResponseBody
