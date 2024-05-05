@@ -17,7 +17,7 @@ import fr.isitc.tezea.model.WorkSiteRequest;
 import jakarta.transaction.Transactional;
 
 @Transactional
-public interface WorkSiteDAO extends JpaRepository<WorkSite, UUID> {    
+public interface WorkSiteDAO extends JpaRepository<WorkSite, UUID> {
 
     List<WorkSite> findAll(Sort sort);
 
