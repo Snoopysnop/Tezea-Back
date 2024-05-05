@@ -125,7 +125,7 @@ public class UserController {
         return users;
     }
 
-    @RequestMapping(value = "/Concierge", method = RequestMethod.POST)
+    @RequestMapping(value = "/Concierge", method = RequestMethod.GET)
     @CrossOrigin
     @ResponseBody
     @Operation(tags = { "Concierge" }, description = "Find a concierge")

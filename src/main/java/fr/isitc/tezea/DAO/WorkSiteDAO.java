@@ -1,9 +1,11 @@
 package fr.isitc.tezea.DAO;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
+import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
@@ -16,6 +18,8 @@ import jakarta.transaction.Transactional;
 
 @Transactional
 public interface WorkSiteDAO extends JpaRepository<WorkSite, UUID> {    
+
+    List<WorkSite> findAll(Sort sort);
 
     @Query("Select w from WorkSite w where (w.begin >= ?1 and w.begin <=?2) or (w.end >= ?1 and w.end <=?2)")
     public Set<WorkSite> findWorkSiteBetweenDate(LocalDateTime begin, LocalDateTime end);
