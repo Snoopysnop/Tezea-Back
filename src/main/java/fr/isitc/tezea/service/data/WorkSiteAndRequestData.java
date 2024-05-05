@@ -1,25 +1,45 @@
 package fr.isitc.tezea.service.data;
 
 import java.io.Serializable;
+import java.time.LocalDateTime;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
+import java.util.UUID;
 
-import fr.isitc.tezea.model.WorkSite;
-import fr.isitc.tezea.model.WorkSiteRequest;
+import fr.isitc.tezea.model.enums.SatisfactionLevel;
+import fr.isitc.tezea.model.enums.WorkSiteStatus;
 import lombok.Data;
 
 @Data
 public class WorkSiteAndRequestData implements Serializable {
 
-    private Set<WorkSiteRequestData> requests = new HashSet<>();
-    private Set<WorkSiteData> workSites = new HashSet<>();
+    private WorkSiteRequestData workSiteRequest;
+    private UUID workSiteChief;
+    private LocalDateTime begin;
+    private LocalDateTime end;
+    private Set<UUID> staff = new HashSet<>();
+    private Map<String, Integer> equipments = new HashMap<>();
+    private UUID id;
+    private SatisfactionLevel satisfaction;
+    private WorkSiteStatus status;
+    private byte[] signature;
 
-    public void addRequest(WorkSiteRequest request) {
-        this.requests.add(new WorkSiteRequestData(request));
-    }
+    
+    public WorkSiteAndRequestData(WorkSiteData worksite, WorkSiteRequestData request) {
+        this.workSiteRequest = request;
 
-    public void addWorkSite(WorkSite workSite) {
-        this.workSites.add(new WorkSiteData(workSite));
+        this.workSiteChief = worksite.getWorkSiteChief();
+        this.begin = worksite.getBegin();
+        this.end = worksite.getEnd();
+        this.staff = worksite.getStaff();
+        this.equipments = worksite.getEquipments();
+        this.id = worksite.getId();
+        this.satisfaction = worksite.getSatisfaction();
+        this.status = worksite.getStatus();
+        this.signature = worksite.getSignature();
+        
     }
 
     

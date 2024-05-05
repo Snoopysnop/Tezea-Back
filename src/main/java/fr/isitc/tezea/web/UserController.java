@@ -228,7 +228,7 @@ public class UserController {
     @CrossOrigin
     @ResponseBody
     @Operation(tags = { "WorkSiteChief" }, description = "Find worksite chiefs worksite requests and workSites")
-    public WorkSiteAndRequestData getWorkSiteChiefWorkSiteRequestsAndWorkSite(@PathVariable UUID id) {
+    public Set<WorkSiteAndRequestData> getWorkSiteChiefWorkSiteRequestsAndWorkSite(@PathVariable UUID id) {
         LOGGER.info("REST request to get worksite chief worksite requests and worksites");
 
         User user =  findUser(id);
@@ -237,17 +237,14 @@ public class UserController {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
         }
     
-        WorkSiteAndRequestData data = new WorkSiteAndRequestData();
-
-        for(WorkSiteRequest workSiteRequest : workSiteDAO.findWorkSiteRequestByWorkSiteChief(user)) {
-            data.addRequest(workSiteRequest);
-        }
+        Set<WorkSiteAndRequestData> datas = new HashSet<>();
 
         for(WorkSite workSite : workSiteDAO.findByWorkSiteChief(user)) {
-            data.addWorkSite(workSite);
+            WorkSiteRequestData request = new WorkSiteRequestData(workSite.getRequest());
+            datas.add(new WorkSiteAndRequestData(new WorkSiteData(workSite), request));
         }
         
-        return data;
+        return datas;
     }
 
 }
