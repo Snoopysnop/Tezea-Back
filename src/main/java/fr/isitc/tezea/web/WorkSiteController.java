@@ -220,7 +220,7 @@ public class WorkSiteController {
     @RequestMapping(value = "/{id}/incident", method = RequestMethod.PUT)
     @CrossOrigin
     @ResponseBody
-    @Operation(tags = { "WorkSite", "Incident" }, description = "Apply incident to worksite")
+    @Operation(tags = { "WorkSite" }, description = "Apply incident to worksite")
     public IncidentData addIncident(@PathVariable UUID id, @RequestBody IncidentDTO incidentDTO) {
         LOGGER.info("REST request to declare incident " + incidentDTO + " to workSite " + id);
 
@@ -266,7 +266,7 @@ public class WorkSiteController {
     @RequestMapping(value = "/{id}/incidents", method = RequestMethod.GET)
     @CrossOrigin
     @ResponseBody
-    @Operation(tags = { "WorkSite", "Incident" }, description = "Get worksite's incidents")
+    @Operation(tags = { "WorkSite" }, description = "Get worksite's incidents")
     public Set<IncidentData> getWorkSiteIncidents(@PathVariable UUID id) {
         LOGGER.info("REST request get incident for worksite " + id);
         findWorkSite(id);
@@ -277,23 +277,6 @@ public class WorkSiteController {
         }
 
         return incidents;
-    }
-
-    @RequestMapping(value = "/incidents", method = RequestMethod.GET)
-    @CrossOrigin
-    @ResponseBody
-    @Operation(tags = { "WorkSite", "Incident" }, description = "Get all incidents")
-    public Set<IncidentData> findAllIncidents(){
-        LOGGER.info("REST request get all incidents");
-        Set<IncidentData> data = new HashSet<>();
-
-        for(Set<Incident> incidents : workSiteDAO.findAllIncidents()) {
-            for(Incident incident : incidents){
-                data.add(new IncidentData(incident));
-            }
-        }
-
-        return data;
     }
 
     @RequestMapping(value = "/{id}/invoice", method = RequestMethod.PUT)

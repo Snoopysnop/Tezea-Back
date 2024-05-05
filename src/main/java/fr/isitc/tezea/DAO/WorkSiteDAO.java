@@ -31,7 +31,4 @@ public interface WorkSiteDAO extends JpaRepository<WorkSite, UUID> {
     @Query("Select w.request from WorkSite w where w.workSiteChief = ?1")
     Set<WorkSiteRequest> findWorkSiteRequestByWorkSiteChief(User workSiteChief);
 
-    @Query("Select w.incidents from WorkSite w")
-    Set<Set<Incident>> findAllIncidents();
-
 }
