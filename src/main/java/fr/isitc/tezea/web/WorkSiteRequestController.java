@@ -1,11 +1,13 @@
 package fr.isitc.tezea.web;
 
-import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.logging.Logger;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -47,10 +49,20 @@ public class WorkSiteRequestController {
     @CrossOrigin
     @ResponseBody
     @Operation(tags = { "WorkSiteRequest" }, description = "Returns all work site requests")
-    public List<WorkSiteRequestData> findAll() {
+    public Set<WorkSiteRequestData> findAll(@RequestBody(required = false) String sortString) {
         LOGGER.info("REST request to get all work site requests");
-        List<WorkSiteRequestData> requests = new ArrayList<>();
-        List<WorkSiteRequest> actualRequests = workSiteRequestDAO.findAll();
+        
+        List<WorkSiteRequest> actualRequests;
+
+        if("creationDate".equals("sortString") || "estimatedDate".equals("sortString")){
+            Sort sort = Sort.by(Sort.Direction.ASC, sortString);
+            actualRequests = workSiteRequestDAO.findAll(sort);
+        }
+        else {
+            actualRequests = workSiteRequestDAO.findAll();
+        }
+        
+        Set<WorkSiteRequestData> requests = new HashSet<>();
         for (WorkSiteRequest request : actualRequests) {
             requests.add(new WorkSiteRequestData(request));
         }

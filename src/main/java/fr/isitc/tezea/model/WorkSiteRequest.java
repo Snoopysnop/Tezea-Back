@@ -90,7 +90,7 @@ public class WorkSiteRequest implements Serializable {
     @Column(name = "creationDate")
     private LocalDateTime creationDate;
 
-    @Column(name = "hour-estimatedDate")
+    @Column(name = "estimatedDate")
     private LocalDateTime estimatedDate;
 
     @Column(name = "weight_estimate")
