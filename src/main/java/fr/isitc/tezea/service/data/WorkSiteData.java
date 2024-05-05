@@ -14,7 +14,6 @@ import lombok.EqualsAndHashCode;
 public class WorkSiteData extends WorkSiteDTO {
 
     private UUID id;
-    private Integer request;
     private SatisfactionLevel satisfaction;
     private WorkSiteStatus status;
     private byte[] signature;
@@ -22,7 +21,6 @@ public class WorkSiteData extends WorkSiteDTO {
     public WorkSiteData(WorkSite workSite) {
         super(workSite);
         this.id = workSite.getId();
-        this.request = workSite.getRequest() == null ? null : workSite.getRequest().getId();
         this.satisfaction = workSite.getSatisfaction();
         this.status = workSite.getStatus();
         this.signature = workSite.getSignature();

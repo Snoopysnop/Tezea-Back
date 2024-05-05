@@ -28,6 +28,7 @@ import fr.isitc.tezea.model.WorkSiteRequest;
 import fr.isitc.tezea.model.enums.Role;
 import fr.isitc.tezea.service.DTO.UserDTO;
 import fr.isitc.tezea.service.data.UserData;
+import fr.isitc.tezea.service.data.WorkSiteAndRequestData;
 import fr.isitc.tezea.service.data.WorkSiteData;
 import fr.isitc.tezea.service.data.WorkSiteRequestData;
 import fr.isitc.tezea.utils.TimeLine;
@@ -150,7 +151,7 @@ public class UserController {
     @RequestMapping(value = "/workSiteChiefs/availabilities", method = RequestMethod.POST)
     @CrossOrigin
     @ResponseBody
-    @Operation(tags = { "User" }, description = "Find available worksite chiefs")
+    @Operation(tags = { "WorkSiteChief" }, description = "Find available worksite chiefs")
     public Set<UserData> getAvailableWorkSiteChiefs(@RequestBody TimeLine timeLine) {
         LOGGER.info("REST request to find employees available between " + timeLine.getBegin() + " and "
                 + timeLine.getEnd());
@@ -171,10 +172,10 @@ public class UserController {
     }
 
 
-    @RequestMapping(value = "{id}/workSites", method = RequestMethod.POST)
+    @RequestMapping(value = "{id}/workSites", method = RequestMethod.GET)
     @CrossOrigin
     @ResponseBody
-    @Operation(tags = { "User" }, description = "Find worksite chiefs worksites")
+    @Operation(tags = { "WorkSiteChief" }, description = "Find worksite chiefs worksites")
     public Set<WorkSiteData> getWorkSiteChiefWorkSites(@PathVariable UUID id) {
         LOGGER.info("REST request to get worksite chief worksites");
 
@@ -192,10 +193,10 @@ public class UserController {
         return workSites;
     }
 
-    @RequestMapping(value = "{id}/workSiteRequests", method = RequestMethod.POST)
+    @RequestMapping(value = "{id}/workSiteRequests", method = RequestMethod.GET)
     @CrossOrigin
     @ResponseBody
-    @Operation(tags = { "User" }, description = "Find worksite chiefs worksite requests")
+    @Operation(tags = { "WorkSiteChief" }, description = "Find worksite chiefs worksite requests")
     public Set<WorkSiteRequestData> getWorkSiteChiefWorkSiteRequests(@PathVariable UUID id) {
         LOGGER.info("REST request to get worksite chief worksite requests");
 
@@ -211,6 +212,32 @@ public class UserController {
         }
         
         return workSiteRequests;
+    }
+
+    @RequestMapping(value = "{id}/allWorkSites", method = RequestMethod.GET)
+    @CrossOrigin
+    @ResponseBody
+    @Operation(tags = { "WorkSiteChief" }, description = "Find worksite chiefs worksite requests and workSites")
+    public WorkSiteAndRequestData getWorkSiteChiefWorkSiteRequestsAndWorkSite(@PathVariable UUID id) {
+        LOGGER.info("REST request to get worksite chief worksite requests and worksites");
+
+        User user =  findUser(id);
+        if(user.getRole() != Role.WorkSiteChief){
+            LOGGER.info("User is not a worksite chief");
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+        }
+    
+        WorkSiteAndRequestData data = new WorkSiteAndRequestData();
+
+        for(WorkSiteRequest workSiteRequest : workSiteDAO.findWorkSiteRequestByWorkSiteChief(user)) {
+            data.addRequest(workSiteRequest);
+        }
+
+        for(WorkSite workSite : workSiteDAO.findByWorkSiteChief(user)) {
+            data.addWorkSite(workSite);
+        }
+        
+        return data;
     }
 
 }
