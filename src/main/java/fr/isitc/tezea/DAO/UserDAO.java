@@ -18,6 +18,8 @@ public interface UserDAO extends JpaRepository<User, UUID> {
 
     public Set<User> findByRole(Role role);
 
+    User findFirstByRole(Role role);
+
     @Query("SELECT u FROM User u WHERE u.id IN (?1)")
     public List<User> findByIds(List<UUID> uuids);
 
