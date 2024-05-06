@@ -130,4 +130,24 @@ public class WorkSiteRequest implements Serializable {
         this.tezeaAffectation = workSiteRequestDTO.getTezeaAffectation();
     }
 
+    public void patch(User concierge, User siteChief, Customer customer, WorkSiteRequestDTO workSiteRequestDTO){
+        this.concierge = concierge;
+        this.siteChief = siteChief;
+        this.customer = customer;
+        this.city = workSiteRequestDTO.getCity();
+        this.serviceType = workSiteRequestDTO.getServiceType();
+        this.description = workSiteRequestDTO.getDescription();
+        this.emergency = workSiteRequestDTO.getEmergency();
+        this.title = workSiteRequestDTO.getTitle();
+        this.category = workSiteRequestDTO.getCategory();
+        this.removal = workSiteRequestDTO.isRemoval();
+        this.delivery = workSiteRequestDTO.isDelivery();
+        this.removalRecycling = workSiteRequestDTO.isRemovalRecycling();
+        this.chronoQuote = workSiteRequestDTO.isChronoQuote();
+        this.estimatedDate = workSiteRequestDTO.getEstimatedDate();
+        this.weightEstimate = workSiteRequestDTO.getWeightEstimate();
+        this.volumeEstimate = workSiteRequestDTO.getVolumeEstimate();
+        this.provider = workSiteRequestDTO.getProvider();
+        this.tezeaAffectation = workSiteRequestDTO.getTezeaAffectation();
+    }
 }
