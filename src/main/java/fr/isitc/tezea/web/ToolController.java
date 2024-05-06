@@ -141,10 +141,10 @@ public class ToolController {
         return availability - maxUses;
     }
 
-    @RequestMapping(value = "/availabilities", method = RequestMethod.GET)
+    @RequestMapping(value = "/availabilities", method = RequestMethod.POST)
     @CrossOrigin
     @Operation(tags = { "Tool" }, description = "Returns the availabilities for all tools at specified timeline")
-    public Map<String, Integer> getAvailabilities(@RequestParam TimeLine timeLine) {
+    public Map<String, Integer> getAvailabilities(@RequestBody TimeLine timeLine) {
         LOGGER.info("REST request to get tools availabilities between " + timeLine.getBegin() + " and "
                 + timeLine.getEnd());
 
