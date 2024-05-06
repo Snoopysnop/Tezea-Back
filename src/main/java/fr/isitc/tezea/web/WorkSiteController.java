@@ -307,6 +307,27 @@ public class WorkSiteController {
 
     }
 
+    @RequestMapping(value = "/v2/incident/{id}/evidences", method = RequestMethod.PUT)
+    @CrossOrigin
+    @ResponseBody
+    @Operation(tags = { "WorkSite", "Incident" }, description = "Add evidence to an incident")
+    public IncidentData addEvidence(@PathVariable UUID id, @RequestBody byte[] evidence) {
+        LOGGER.info("REST request to add evidence to incident " + id);
+
+        Optional<Incident> incident = incidentDAO.findById(id);
+        if (!incident.isPresent()) {
+            LOGGER.info("incident " + id + " not found");
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+        }
+
+        Incident foundIncident = incident.get();
+            foundIncident.addEvidence(evidence);
+
+        incidentDAO.save(foundIncident);
+        return new IncidentData(foundIncident);
+
+    }
+
     @RequestMapping(value = "/{id}/incidents", method = RequestMethod.GET)
     @CrossOrigin
     @ResponseBody
@@ -373,6 +394,45 @@ public class WorkSiteController {
             e.printStackTrace();
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR);
         }
+    }
+
+    @RequestMapping(value = "/v2/{id}/invoice", method = RequestMethod.PUT)
+    @CrossOrigin
+    @ResponseBody
+    @Operation(tags = { "WorkSite", "Invoice" }, description = "Apply invoice to worksite")
+    public InvoiceData addInvoice(@PathVariable UUID id, @RequestBody InvoiceDTO invoiceDTO) {
+        LOGGER.info("REST request to apply invoice " + invoiceDTO + " to workSite " + id);
+
+        WorkSite workSite = findWorkSite(id);
+
+        Invoice invoice = new Invoice(workSite, null, invoiceDTO.getTitle(), invoiceDTO.getDescription(), invoiceDTO.getAmount(), null);
+        workSite.addInvoice(invoice);
+        workSiteDAO.save(workSite);
+        invoiceDAO.save(invoice);
+
+        return new InvoiceData(invoice);
+    }
+
+    @RequestMapping(value = "/v2/invoice/{id}/file", method = RequestMethod.PUT)
+    @CrossOrigin
+    @ResponseBody
+    @Operation(tags = { "WorkSite", "Invoice" }, description = "Add invoice file to a invoice id")
+    public InvoiceData addInvoiceFile(@PathVariable UUID id, @RequestParam String fileExtension, @RequestBody byte[] file) {
+        LOGGER.info("REST request to upload a file to invoice " + id);
+
+        Optional<Invoice> invoice = invoiceDAO.findById(id);
+        if (!invoice.isPresent()) {
+            LOGGER.info("invoice " + id + " not found");
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+        }
+
+        Invoice foundInvoice = invoice.get();
+        foundInvoice.setInvoice(file);
+        foundInvoice.setFileExtension(fileExtension);
+
+        invoiceDAO.save(foundInvoice);
+        return new InvoiceData(foundInvoice);
+
     }
 
     @RequestMapping(value = "/{id}/invoices", method = RequestMethod.GET)
