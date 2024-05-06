@@ -13,10 +13,12 @@ public class InvoiceData extends InvoiceDTO {
     
     private UUID id;
     private byte[] invoice;
+    private String fileExtension;
 
     public InvoiceData(Invoice invoice) {
         super(invoice);
         this.id = invoice.getId();
         this.invoice = invoice.getInvoice();
+        this.fileExtension = invoice.getFileExtension();
     }
 }
