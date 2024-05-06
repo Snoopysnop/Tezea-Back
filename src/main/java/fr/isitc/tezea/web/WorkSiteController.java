@@ -157,6 +157,7 @@ public class WorkSiteController {
     @Operation(tags = { "WorkSite" }, description = "Create a work site")
     public WorkSiteData create(@RequestBody WorkSiteDTO workSiteDTO) {
         LOGGER.info("REST request to create work site " + workSiteDTO);
+        
 
         Set<User> staff = new HashSet<>();
 

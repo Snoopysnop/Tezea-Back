@@ -1,11 +1,14 @@
 package fr.isitc.tezea.service;
 
 import jakarta.ws.rs.BadRequestException;
+import jakarta.ws.rs.core.Response;
+
 import org.keycloak.OAuth2Constants;
 import org.keycloak.admin.client.Keycloak;
 import org.keycloak.admin.client.KeycloakBuilder;
 import org.keycloak.admin.client.resource.RealmResource;
 import org.keycloak.representations.idm.CredentialRepresentation;
+import org.keycloak.representations.idm.RoleRepresentation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -20,6 +23,7 @@ import fr.isitc.tezea.service.data.UserData;
 import org.keycloak.admin.client.resource.UsersResource;
 import org.keycloak.representations.idm.UserRepresentation;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -70,16 +74,15 @@ public class UserServices {
             // }
 
             RealmResource realmResource = getKeycloakInstance().realm(realm);
-
+            
             UsersResource usersResource = realmResource.users();
 
             CredentialRepresentation credential = Credentials.createPasswordCredentials(password);
 
             UserRepresentation userRepresentation = new UserRepresentation();
 
-
             List<String> roles = new ArrayList<>();
-            roles.add(userDTO.getRole().toString());
+            roles.add(userDTO.getRole().toString().toUpperCase());
 
             userRepresentation.setFirstName(userDTO.getFirstName());
             userRepresentation.setLastName(userDTO.getLastName());
@@ -88,9 +91,14 @@ public class UserServices {
             userRepresentation.setRealmRoles(roles);
             userRepresentation.setCredentials(Collections.singletonList(credential));
             userRepresentation.setEnabled(true);
-            System.out.println(usersResource.count());
 
-            usersResource.create(userRepresentation);
+            Response response = usersResource.create(userRepresentation);
+        String userId = response.getLocation().getPath().replaceAll(".*/([^/]+)$", "$1");
+
+        RoleRepresentation realmRoles = realmResource.roles().get(userDTO.getRole().toString().toUpperCase()).toRepresentation();
+        System.out.printf("User created with userId: %s%n", userId);
+
+        usersResource.get(userId).roles().realmLevel().add(Collections.singletonList(realmRoles));
 
             User user = new User(userDTO);
             userDao.save(user);
