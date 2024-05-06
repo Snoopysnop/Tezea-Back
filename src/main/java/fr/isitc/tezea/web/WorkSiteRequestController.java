@@ -25,6 +25,7 @@ import org.springframework.web.server.ResponseStatusException;
 import fr.isitc.tezea.DAO.WorkSiteRequestDAO;
 import fr.isitc.tezea.DAO.CustomerDAO;
 import fr.isitc.tezea.DAO.UserDAO;
+import fr.isitc.tezea.DAO.WorkSiteDAO;
 import fr.isitc.tezea.model.Customer;
 import fr.isitc.tezea.model.User;
 import fr.isitc.tezea.model.WorkSiteRequest;
@@ -32,6 +33,7 @@ import fr.isitc.tezea.model.enums.CustomerStatus;
 import fr.isitc.tezea.model.enums.RequestStatus;
 import fr.isitc.tezea.model.enums.Role;
 import fr.isitc.tezea.model.enums.Service;
+import fr.isitc.tezea.model.enums.WorkSiteStatus;
 import fr.isitc.tezea.service.DTO.WorkSiteRequestDTO;
 import fr.isitc.tezea.service.data.WorkSiteRequestData;
 import io.swagger.v3.oas.annotations.Operation;
@@ -44,6 +46,9 @@ public class WorkSiteRequestController {
 
     @Autowired
     private WorkSiteRequestDAO workSiteRequestDAO;
+
+    @Autowired
+    private WorkSiteDAO workSiteDAO;
 
     @Autowired
     private UserDAO userDAO;
@@ -178,6 +183,44 @@ public class WorkSiteRequestController {
         }
 
         return statistics;
+    }
+
+    @RequestMapping(value = "{id}/statistics/workSiteStatus", method = RequestMethod.GET)
+    @CrossOrigin
+    @ResponseBody
+    @Operation(tags = { "WorkSiteRequest" }, description = "Get number of worksite status for request")
+    public Map<WorkSiteStatus, Integer> getStatusStatistics(@PathVariable Integer id) {
+        LOGGER.info("REST request to get worksites status statistics for worksite request " + id);
+
+        WorkSiteRequest workSiteRequest = findWorkSiteRequest(id);
+
+        Map<WorkSiteStatus, Integer> statistics = new HashMap<>();
+        for (WorkSiteStatus status : WorkSiteStatus.values()) {
+            statistics.put(status, workSiteDAO.findByRequestAndStatus(workSiteRequest, status).size());
+        }
+
+        return statistics;
+    }
+
+    @RequestMapping(value = "/statistics/workSitesStatus", method = RequestMethod.GET)
+    @CrossOrigin
+    @ResponseBody
+    @Operation(tags = { "WorkSiteRequest" }, description = "Get number of worksite status for requests")
+    public Map<Integer, Map<WorkSiteStatus, Integer>> getStatusStatistics(@RequestParam Set<Integer> ids) {
+        LOGGER.info("REST request to get worksites status statistics for worksites requests " + ids);
+
+        Map<Integer, Map<WorkSiteStatus, Integer>> res = new HashMap<>();
+        for(Integer id : ids){
+            WorkSiteRequest workSiteRequest = findWorkSiteRequest(id);
+
+            Map<WorkSiteStatus, Integer> statistics = new HashMap<>();
+            for (WorkSiteStatus status : WorkSiteStatus.values()) {
+                statistics.put(status, workSiteDAO.findByRequestAndStatus(workSiteRequest, status).size());
+            }
+            res.put(id, statistics);
+        }   
+        
+        return res;
     }
 
     @RequestMapping(value = "/statistics/cities", method = RequestMethod.GET)
