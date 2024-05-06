@@ -98,7 +98,7 @@ public class WorkSiteRequestController {
 
         User concierge = null;
         if (workSiteRequestDTO.getConcierge() != null) {
-            concierge = userDAO.findById(workSiteRequestDTO.getSiteChief()).get();
+            concierge = userDAO.findById(workSiteRequestDTO.getConcierge()).get();
         }
 
         User siteChief = null;
