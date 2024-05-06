@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
@@ -93,7 +94,7 @@ public class ToolController {
         return toolDTO;
     }
 
-    @RequestMapping(value = "/{name}/availabilities", method = RequestMethod.POST)
+    @RequestMapping(value = "/{name}/availabilities", method = RequestMethod.GET)
     @CrossOrigin
     @Operation(tags = {
             "Tool" }, description = "Returns the number of availabilities for tool with the name at specified timeline")
@@ -152,6 +153,22 @@ public class ToolController {
         }
 
         return availabilities;
+    }
+
+    @RequestMapping(value = "/delete/{name}", method = RequestMethod.DELETE)
+    @CrossOrigin
+    @ResponseBody
+    @Operation(tags = { "Tool" }, description = "Delete tool by name")
+    public void deleteInvoice(@PathVariable String name) {
+        LOGGER.info("REST request to delete tool " + name);
+
+        Tool tool = toolDAO.findById(name).orElse(null);
+        if (tool == null) {
+            LOGGER.info("tool " + name + " not found");
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+        }
+
+        toolDAO.deleteById(name);
     }
 
 }

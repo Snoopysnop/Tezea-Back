@@ -16,7 +16,7 @@ public class WorkSiteData extends WorkSiteDTO {
     private UUID id;
     private SatisfactionLevel satisfaction;
     private WorkSiteStatus status;
-    private byte[] signature;
+    private String signature;
     private String comment;
 
     public WorkSiteData(WorkSite workSite) {

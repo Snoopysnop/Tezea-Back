@@ -15,7 +15,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -56,7 +55,7 @@ public class UserController {
     @Autowired
     private IncidentDAO incidentDAO;
 
-    private User findUser(UUID id){
+    private User findUser(UUID id) {
         Optional<User> user = userDAO.findById(id);
 
         if (!user.isPresent()) {
@@ -89,19 +88,19 @@ public class UserController {
     public UserData findOne(@PathVariable UUID id) {
         LOGGER.info("REST request to find user with id " + id);
 
-        User user =  findUser(id);
+        User user = findUser(id);
         return new UserData(user);
     }
 
-    @RequestMapping(value = "/findSomeUsers", method = RequestMethod.GET)
+    @RequestMapping(value = "/findSomeUsers", method = RequestMethod.POST)
     @CrossOrigin
     @ResponseBody
     @Operation(tags = { "User" }, description = "Returns users with id present in the given list")
-    public Set<UserData> findSomeUsers(@RequestParam List<UUID> uuids) {
+    public Set<UserData> findSomeUsers(@RequestBody List<UUID> uuids) {
         LOGGER.info("REST request to find users with id present in " + uuids);
 
         Set<UserData> users = new HashSet<>();
-        for(User user : userDAO.findByIds(uuids)) {
+        for (User user : userDAO.findByIds(uuids)) {
             users.add(new UserData(user));
         }
         return users;
@@ -188,7 +187,6 @@ public class UserController {
         return availableWorkSiteChiefs;
     }
 
-
     @RequestMapping(value = "{id}/workSites", method = RequestMethod.GET)
     @CrossOrigin
     @ResponseBody
@@ -196,17 +194,17 @@ public class UserController {
     public Set<WorkSiteData> getWorkSiteChiefWorkSites(@PathVariable UUID id) {
         LOGGER.info("REST request to get worksite chief worksites");
 
-        User user =  findUser(id);
-        if(user.getRole() != Role.WorkSiteChief){
+        User user = findUser(id);
+        if (user.getRole() != Role.WorkSiteChief) {
             LOGGER.info("User is not a worksite chief");
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
         }
-    
+
         Set<WorkSiteData> workSites = new HashSet<>();
-        for(WorkSite workSite : workSiteDAO.findByWorkSiteChief(user)) {
+        for (WorkSite workSite : workSiteDAO.findByWorkSiteChief(user)) {
             workSites.add(new WorkSiteData(workSite));
         }
-        
+
         return workSites;
     }
 
@@ -217,17 +215,17 @@ public class UserController {
     public Set<WorkSiteRequestData> getWorkSiteChiefWorkSiteRequests(@PathVariable UUID id) {
         LOGGER.info("REST request to get worksite chief worksite requests");
 
-        User user =  findUser(id);
-        if(user.getRole() != Role.WorkSiteChief){
+        User user = findUser(id);
+        if (user.getRole() != Role.WorkSiteChief) {
             LOGGER.info("User is not a worksite chief");
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
         }
-    
+
         Set<WorkSiteRequestData> workSiteRequests = new HashSet<>();
-        for(WorkSiteRequest workSiteRequest : workSiteDAO.findWorkSiteRequestByWorkSiteChief(user)) {
+        for (WorkSiteRequest workSiteRequest : workSiteDAO.findWorkSiteRequestByWorkSiteChief(user)) {
             workSiteRequests.add(new WorkSiteRequestData(workSiteRequest));
         }
-        
+
         return workSiteRequests;
     }
 
@@ -238,15 +236,15 @@ public class UserController {
     public Set<WorkSiteAndRequestData> getWorkSiteChiefWorkSiteRequestsAndWorkSite(@PathVariable UUID id) {
         LOGGER.info("REST request to get worksite chief worksite requests and worksites");
 
-        User user =  findUser(id);
-        if(user.getRole() != Role.WorkSiteChief){
+        User user = findUser(id);
+        if (user.getRole() != Role.WorkSiteChief) {
             LOGGER.info("User is not a worksite chief");
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
         }
-    
+
         Set<WorkSiteAndRequestData> datas = new HashSet<>();
 
-        for(WorkSite workSite : workSiteDAO.findByWorkSiteChief(user)) {
+        for (WorkSite workSite : workSiteDAO.findByWorkSiteChief(user)) {
             WorkSiteRequestData request = new WorkSiteRequestData(workSite.getRequest());
 
             // check if workSite has incidents
@@ -254,7 +252,7 @@ public class UserController {
 
             datas.add(new WorkSiteAndRequestData(new WorkSiteData(workSite), request, hasIncidents));
         }
-        
+
         return datas;
     }
 

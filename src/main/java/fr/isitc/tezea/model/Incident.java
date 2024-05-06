@@ -46,7 +46,7 @@ public class Incident implements Serializable {
     @Column(name = "evidences", columnDefinition="LONGBLOB")
     @Lob
     @ElementCollection
-    private List<byte[]> evidences = new ArrayList<>();
+    private List<String> evidences = new ArrayList<>();
 
     protected Incident() {
 
@@ -59,7 +59,7 @@ public class Incident implements Serializable {
         this.description = description;
     }
 
-    public void addEvidence(byte[] evidence){
+    public void addEvidence(String evidence){
         this.evidences.add(evidence);
     }
 
