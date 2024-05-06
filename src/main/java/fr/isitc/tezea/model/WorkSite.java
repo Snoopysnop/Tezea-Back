@@ -79,6 +79,9 @@ public class WorkSite implements Serializable {
     @Column(name = "title")
     private String title;
 
+    @Column(name = "comment")
+    private String comment;
+
     public WorkSite(LocalDateTime begin, LocalDateTime end, User workSiteChief, Set<User> staff, String address,
             String title,
             WorkSiteRequest request) {

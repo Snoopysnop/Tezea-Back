@@ -17,6 +17,7 @@ public class WorkSiteData extends WorkSiteDTO {
     private SatisfactionLevel satisfaction;
     private WorkSiteStatus status;
     private byte[] signature;
+    private String comment;
 
     public WorkSiteData(WorkSite workSite) {
         super(workSite);
@@ -24,6 +25,7 @@ public class WorkSiteData extends WorkSiteDTO {
         this.satisfaction = workSite.getSatisfaction();
         this.status = workSite.getStatus();
         this.signature = workSite.getSignature();
+        this.comment = workSite.getComment();
 
     }
 }
