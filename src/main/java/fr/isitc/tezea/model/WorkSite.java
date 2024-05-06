@@ -92,6 +92,7 @@ public class WorkSite implements Serializable {
         this.request = request;
         this.address = address;
         this.title = title;
+        this.status = WorkSiteStatus.Standby;
     }
 
     protected WorkSite() {
