@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import java.util.UUID;
 import java.util.logging.Logger;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +18,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
@@ -93,7 +95,7 @@ public class ToolController {
         return toolDTO;
     }
 
-    @RequestMapping(value = "/{name}/availabilities", method = RequestMethod.POST)
+    @RequestMapping(value = "/{name}/availabilities", method = RequestMethod.GET)
     @CrossOrigin
     @Operation(tags = {
             "Tool" }, description = "Returns the number of availabilities for tool with the name at specified timeline")
@@ -139,10 +141,10 @@ public class ToolController {
         return availability - maxUses;
     }
 
-    @RequestMapping(value = "/availabilities", method = RequestMethod.POST)
+    @RequestMapping(value = "/availabilities", method = RequestMethod.GET)
     @CrossOrigin
     @Operation(tags = { "Tool" }, description = "Returns the availabilities for all tools at specified timeline")
-    public Map<String, Integer> getAvailabilities(@RequestBody TimeLine timeLine) {
+    public Map<String, Integer> getAvailabilities(@RequestParam TimeLine timeLine) {
         LOGGER.info("REST request to get tools availabilities between " + timeLine.getBegin() + " and "
                 + timeLine.getEnd());
 
@@ -152,6 +154,22 @@ public class ToolController {
         }
 
         return availabilities;
+    }
+
+    @RequestMapping(value = "/delete/{name}", method = RequestMethod.DELETE)
+    @CrossOrigin
+    @ResponseBody
+    @Operation(tags = { "Tool" }, description = "Delete tool by name")
+    public void deleteInvoice(@PathVariable String name) {
+        LOGGER.info("REST request to delete tool " + name);
+
+        Tool tool = toolDAO.findById(name).orElse(null);
+        if (tool == null) {
+            LOGGER.info("tool " + name + " not found");
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+        }
+
+        toolDAO.deleteById(name);
     }
 
 }
