@@ -211,7 +211,24 @@ public class WorkSiteController {
         return new WorkSiteData(newWorkSite);
     }
 
-    @RequestMapping(value = "/{id}/upload_signature_and_satisfaction", method = RequestMethod.PATCH)
+    @RequestMapping(value = "/{id}/upload_comment", method = RequestMethod.PUT)
+    @CrossOrigin
+    @ResponseBody
+    @Operation(tags = { "WorkSite" }, description = "Set comment")
+    public void uploadComment(@PathVariable UUID id, @RequestBody String comment) {
+
+        WorkSite workSite = findWorkSite(id);
+
+        try {
+            workSite.setComment(comment);
+            workSiteDAO.save(workSite);
+        } catch (Exception e) {
+            LOGGER.info("Can't upload comment for work site " + id);
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @RequestMapping(value = "/{id}/upload_signature_and_satisfaction", method = RequestMethod.PUT)
     @CrossOrigin
     @ResponseBody
     @Operation(tags = { "WorkSite" }, description = "Set signature and satisfaction")
