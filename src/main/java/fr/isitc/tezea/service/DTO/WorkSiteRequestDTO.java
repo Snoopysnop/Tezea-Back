@@ -59,7 +59,7 @@ public class WorkSiteRequestDTO implements Serializable {
     public WorkSiteRequestDTO(WorkSiteRequest workSiteRequest) {
         this.category = workSiteRequest.getCategory();
         this.city = workSiteRequest.getCity();
-        this.concierge = workSiteRequest.getConcierge().getId();
+        this.concierge = workSiteRequest.getConcierge() == null ? null : workSiteRequest.getConcierge().getId();
         this.customer = workSiteRequest.getCustomer() == null ? null : workSiteRequest.getCustomer().getId();
         this.estimatedDate = workSiteRequest.getEstimatedDate();
         this.description = workSiteRequest.getDescription();

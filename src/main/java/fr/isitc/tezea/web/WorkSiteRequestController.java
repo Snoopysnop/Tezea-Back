@@ -57,17 +57,16 @@ public class WorkSiteRequestController {
     @Operation(tags = { "WorkSiteRequest" }, description = "Returns all work site requests")
     public Set<WorkSiteRequestData> findAll(@RequestBody(required = false) String sortString) {
         LOGGER.info("REST request to get all work site requests");
-        
+
         List<WorkSiteRequest> actualRequests;
 
-        if("creationDate".equals("sortString") || "estimatedDate".equals("sortString")){
+        if ("creationDate".equals("sortString") || "estimatedDate".equals("sortString")) {
             Sort sort = Sort.by(Sort.Direction.ASC, sortString);
             actualRequests = workSiteRequestDAO.findAll(sort);
-        }
-        else {
+        } else {
             actualRequests = workSiteRequestDAO.findAll();
         }
-        
+
         Set<WorkSiteRequestData> requests = new HashSet<>();
         for (WorkSiteRequest request : actualRequests) {
             requests.add(new WorkSiteRequestData(request));
@@ -83,7 +82,7 @@ public class WorkSiteRequestController {
 
         Optional<WorkSiteRequest> workSiteRequest;
         workSiteRequest = workSiteRequestDAO.findById(id);
-        if(!workSiteRequest.isPresent()) {
+        if (!workSiteRequest.isPresent()) {
             LOGGER.info("Work site request " + id + " not found");
             throw new ResponseStatusException(HttpStatus.NOT_FOUND);
         }
@@ -97,22 +96,21 @@ public class WorkSiteRequestController {
     public WorkSiteRequestData create(@RequestBody WorkSiteRequestDTO workSiteRequestDTO) {
         LOGGER.info("REST request to create work site request " + workSiteRequestDTO);
 
-        Optional<User> concierge = userDAO.findById(workSiteRequestDTO.getConcierge());
-        if (!concierge.isPresent()) {
-            LOGGER.info("concierge " + workSiteRequestDTO.getConcierge() + " not found");
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+        User concierge = null;
+        if (workSiteRequestDTO.getConcierge() != null) {
+            concierge = userDAO.findById(workSiteRequestDTO.getSiteChief()).get();
         }
-        
+
         User siteChief = null;
-        if(workSiteRequestDTO.getSiteChief() != null){
+        if (workSiteRequestDTO.getSiteChief() != null) {
             siteChief = userDAO.findById(workSiteRequestDTO.getSiteChief()).get();
         }
-       
+
         Customer customer = null;
-        if(workSiteRequestDTO.getCustomer() != null) {
+        if (workSiteRequestDTO.getCustomer() != null) {
             customer = customerDAO.findById(workSiteRequestDTO.getCustomer()).get();
         }
-        WorkSiteRequest newWorkSiteRequest = new WorkSiteRequest(concierge.get(), siteChief, customer, workSiteRequestDTO);
+        WorkSiteRequest newWorkSiteRequest = new WorkSiteRequest(concierge, siteChief, customer, workSiteRequestDTO);
 
         workSiteRequestDAO.save(newWorkSiteRequest);
         return new WorkSiteRequestData(newWorkSiteRequest);
@@ -140,16 +138,15 @@ public class WorkSiteRequestController {
         }
     }
 
-
     @RequestMapping(value = "/statistics/status", method = RequestMethod.GET)
     @CrossOrigin
     @ResponseBody
     @Operation(tags = { "WorkSiteRequest" }, description = "Get number of worksite request by status")
-    public Map<RequestStatus, Integer> getStatusStatistics(){
+    public Map<RequestStatus, Integer> getStatusStatistics() {
         LOGGER.info(("REST request to get status statistics"));
 
         Map<RequestStatus, Integer> statistics = new HashMap<>();
-        for(RequestStatus status : RequestStatus.values()) {
+        for (RequestStatus status : RequestStatus.values()) {
             statistics.put(status, workSiteRequestDAO.findByStatus(status).size());
         }
 
@@ -160,27 +157,26 @@ public class WorkSiteRequestController {
     @CrossOrigin
     @ResponseBody
     @Operation(tags = { "WorkSiteRequest" }, description = "Get number of worksite request by cites")
-    public Map<String, Integer> getCitiesStatistics(){
+    public Map<String, Integer> getCitiesStatistics() {
         LOGGER.info("REST request to get cities statistics");
 
         Map<String, Integer> statistics = new HashMap<>();
-        for(String city : workSiteRequestDAO.findAllCities()) {
+        for (String city : workSiteRequestDAO.findAllCities()) {
             statistics.put(city, workSiteRequestDAO.findByCity(city).size());
         }
 
         return statistics;
     }
 
-
     @RequestMapping(value = "/statistics/services", method = RequestMethod.GET)
     @CrossOrigin
     @ResponseBody
     @Operation(tags = { "WorkSiteRequest" }, description = "Get number of worksite request by service types")
-    public Map<Service, Integer> getServicesStatistics(){
+    public Map<Service, Integer> getServicesStatistics() {
         LOGGER.info("REST request to get service types statistics");
 
         Map<Service, Integer> statistics = new HashMap<>();
-        for(Service serviceType : Service.values()) {
+        for (Service serviceType : Service.values()) {
             statistics.put(serviceType, workSiteRequestDAO.findByServiceType(serviceType).size());
         }
 
@@ -191,11 +187,11 @@ public class WorkSiteRequestController {
     @CrossOrigin
     @ResponseBody
     @Operation(tags = { "WorkSiteRequest" }, description = "Get number of worksite request by customer status")
-    public Map<CustomerStatus, Integer> getCustomerStatistics(){
+    public Map<CustomerStatus, Integer> getCustomerStatistics() {
         LOGGER.info("REST request to get customer status statistics");
 
         Map<CustomerStatus, Integer> statistics = new HashMap<>();
-        for(CustomerStatus customerStatus : CustomerStatus.values()) {
+        for (CustomerStatus customerStatus : CustomerStatus.values()) {
             statistics.put(customerStatus, workSiteRequestDAO.findByCustomerStatus(customerStatus).size());
         }
 
@@ -206,16 +202,15 @@ public class WorkSiteRequestController {
     @CrossOrigin
     @ResponseBody
     @Operation(tags = { "WorkSiteRequest" }, description = "Get number of worksite request by cites")
-    public Map<UUID, Integer> getConciergesStatistics(){
+    public Map<UUID, Integer> getConciergesStatistics() {
         LOGGER.info("REST request to get concierges statistics");
 
         Map<UUID, Integer> statistics = new HashMap<>();
-        for(User concierge : userDAO.findByRole(Role.Concierge)) {
+        for (User concierge : userDAO.findByRole(Role.Concierge)) {
             statistics.put(concierge.getId(), workSiteRequestDAO.findByConcierge(concierge).size());
         }
 
         return statistics;
     }
-
 
 }
