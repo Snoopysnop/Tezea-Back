@@ -284,7 +284,7 @@ public class WorkSiteController {
     @CrossOrigin
     @ResponseBody
     @Operation(tags = { "WorkSite", "Incident" }, description = "Add evidence to an incident")
-    public IncidentData addEvidence(@PathVariable UUID id, @RequestPart("evidence") MultipartFile evidence) {
+    public IncidentData addEvidence(@PathVariable UUID id, @RequestParam("evidence") MultipartFile evidence) {
         LOGGER.info("REST request to add evidence to incident " + id);
 
         Optional<Incident> incident = incidentDAO.findById(id);
