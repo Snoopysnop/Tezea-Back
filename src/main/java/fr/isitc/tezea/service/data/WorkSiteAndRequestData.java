@@ -24,7 +24,7 @@ public class WorkSiteAndRequestData implements Serializable {
     private UUID id;
     private SatisfactionLevel satisfaction;
     private WorkSiteStatus status;
-    private byte[] signature;
+    private String signature;
     private boolean hasIncidents;
 
     

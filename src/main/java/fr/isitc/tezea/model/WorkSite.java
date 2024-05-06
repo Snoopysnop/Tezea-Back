@@ -71,7 +71,7 @@ public class WorkSite implements Serializable {
     private SatisfactionLevel satisfaction;
 
     @Column(name = "signature")
-    private byte[] signature;
+    private String signature;
 
     @Column(name = "address")
     private String address;
@@ -92,6 +92,7 @@ public class WorkSite implements Serializable {
         this.request = request;
         this.address = address;
         this.title = title;
+        this.status = WorkSiteStatus.Standby;
     }
 
     protected WorkSite() {

@@ -14,12 +14,15 @@ import fr.isitc.tezea.model.Invoice;
 import fr.isitc.tezea.model.User;
 import fr.isitc.tezea.model.WorkSite;
 import fr.isitc.tezea.model.WorkSiteRequest;
+import fr.isitc.tezea.model.enums.WorkSiteStatus;
 import jakarta.transaction.Transactional;
 
 @Transactional
 public interface WorkSiteDAO extends JpaRepository<WorkSite, UUID> {
 
     List<WorkSite> findAll(Sort sort);
+
+    Set<WorkSite> findByRequestAndStatus(WorkSiteRequest request, WorkSiteStatus status);
 
     @Query("Select w from WorkSite w where (w.begin >= ?1 and w.begin <=?2) or (w.end >= ?1 and w.end <=?2)")
     public Set<WorkSite> findWorkSiteBetweenDate(LocalDateTime begin, LocalDateTime end);

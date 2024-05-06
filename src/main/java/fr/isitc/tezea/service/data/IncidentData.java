@@ -13,7 +13,7 @@ import lombok.EqualsAndHashCode;
 public class IncidentData extends IncidentDTO {
 
     private UUID id;
-    private List<byte[]> evidences;
+    private List<String> evidences;
     private UUID workSiteId;
 
     public IncidentData(Incident incident){
