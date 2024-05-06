@@ -283,7 +283,7 @@ public class WorkSiteController {
     @RequestMapping(value = "/incident/{id}/evidences", method = RequestMethod.PUT)
     @CrossOrigin
     @ResponseBody
-    @Operation(tags = { "WorkSite" }, description = "Add evidence to an incident")
+    @Operation(tags = { "WorkSite", "Incident" }, description = "Add evidence to an incident")
     public IncidentData addEvidence(@PathVariable UUID id, @RequestPart("evidence") MultipartFile evidence) {
         LOGGER.info("REST request to add evidence to incident " + id);
 
@@ -340,10 +340,20 @@ public class WorkSiteController {
         return data;
     }
 
+    @RequestMapping(value = "/incident/{id}", method = RequestMethod.DELETE)
+    @CrossOrigin
+    @ResponseBody
+    @Operation(tags = { "WorkSite", "Incident" }, description = "Delete incident by id")
+    public void deleteIncident(@PathVariable UUID id){
+        LOGGER.info("REST request to delete incident " + id);
+        incidentDAO.deleteById(id);
+    }
+
+
     @RequestMapping(value = "/{id}/invoice", method = RequestMethod.PUT)
     @CrossOrigin
     @ResponseBody
-    @Operation(tags = { "WorkSite" }, description = "Apply invoice to worksite")
+    @Operation(tags = { "WorkSite", "Invoice" }, description = "Apply invoice to worksite")
     public InvoiceData addInvoice(@PathVariable UUID id, @RequestPart("invoice") InvoiceDTO invoiceDTO,
             @RequestPart("file") MultipartFile file) {
         LOGGER.info("REST request to apply invoice " + invoiceDTO + " to workSite " + id);
@@ -368,7 +378,7 @@ public class WorkSiteController {
     @RequestMapping(value = "/{id}/invoices", method = RequestMethod.GET)
     @CrossOrigin
     @ResponseBody
-    @Operation(tags = { "WorkSite" }, description = "Get worksite's invoices")
+    @Operation(tags = { "WorkSite", "Invoice" }, description = "Get worksite's invoices")
     public Set<InvoiceData> getWorkSiteInvoices(@PathVariable UUID id) {
         LOGGER.info("REST request get invoices for worksite " + id);
         findWorkSite(id);
@@ -381,4 +391,12 @@ public class WorkSiteController {
         return invoices;
     }
 
+    @RequestMapping(value = "/invoice/{id}", method = RequestMethod.DELETE)
+    @CrossOrigin
+    @ResponseBody
+    @Operation(tags = { "WorkSite", "Invoice" }, description = "Delete invoice by id")
+    public void deleteInvoice(@PathVariable UUID id){
+        LOGGER.info("REST request to delete invoice " + id);
+        invoiceDAO.deleteById(id);
+    }
 }
