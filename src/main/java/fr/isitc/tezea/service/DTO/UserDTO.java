@@ -14,7 +14,7 @@ public class UserDTO implements Serializable {
     private Role role;
     private String email;
     private String phoneNumber;
-    private byte[] profilePicture;
+    private String profilePicture;
 
     protected UserDTO() {
 

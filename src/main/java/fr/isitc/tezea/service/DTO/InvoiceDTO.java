@@ -10,7 +10,9 @@ public class InvoiceDTO implements Serializable {
     
     private String title;
     private String description;
-    private int amount;
+    private double amount;
+    private String invoiceFile;
+    private String fileExtension;
 
     protected InvoiceDTO() {
 
@@ -20,5 +22,7 @@ public class InvoiceDTO implements Serializable {
         this.title = invoice.getTitle();
         this.description = invoice.getDescription();
         this.amount = invoice.getAmount();
+        this.invoiceFile = invoice.getInvoice();
+        this.fileExtension = invoice.getFileExtension();
     }
 }
