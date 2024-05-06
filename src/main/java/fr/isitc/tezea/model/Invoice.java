@@ -38,16 +38,20 @@ public class Invoice implements Serializable {
     @Column(name = "amount")
     private int amount;
 
+    @Column(name = "file_extension")
+    private String fileExtension;
+
     protected Invoice() {
         
     }
 
-    public Invoice(WorkSite workSite, byte[] invoice, String title, String description, int amount) {
+    public Invoice(WorkSite workSite, byte[] invoice, String title, String description, int amount, String fileExtension) {
         this.workSite = workSite;
         this.invoice = invoice;
         this.title = title;
         this.description = description;
         this.amount = amount;
+        this.fileExtension = fileExtension;
     }
     
 }

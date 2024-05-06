@@ -11,6 +11,7 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.logging.Logger;
 
+import org.apache.commons.io.FilenameUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
@@ -326,7 +327,7 @@ public class WorkSiteController {
     @CrossOrigin
     @ResponseBody
     @Operation(tags = { "WorkSite" }, description = "Apply invoice to worksite")
-    public void addInvoice(@PathVariable UUID id, @RequestPart("invoice") InvoiceDTO invoiceDTO,
+    public InvoiceData addInvoice(@PathVariable UUID id, @RequestPart("invoice") InvoiceDTO invoiceDTO,
             @RequestPart("file") MultipartFile file) {
         LOGGER.info("REST request to apply invoice " + invoiceDTO + " to workSite " + id);
 
@@ -334,10 +335,11 @@ public class WorkSiteController {
 
         try {
             Invoice invoice = new Invoice(workSite, file.getBytes(), invoiceDTO.getTitle(), invoiceDTO.getDescription(),
-                    invoiceDTO.getAmount());
+                    invoiceDTO.getAmount(), FilenameUtils.getExtension(file.getOriginalFilename()));
             workSite.addInvoice(invoice);
             workSiteDAO.save(workSite);
             invoiceDAO.save(invoice);
+            return new InvoiceData(invoice);
 
         } catch (IOException e) {
             LOGGER.warning("Access error on uploaded file");
