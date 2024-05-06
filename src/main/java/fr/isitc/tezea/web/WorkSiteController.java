@@ -5,13 +5,11 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.io.IOException;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 import java.util.logging.Logger;
 
-import org.apache.commons.io.FilenameUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
@@ -21,10 +19,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 
 import fr.isitc.tezea.DAO.ToolUsageDAO;
@@ -233,13 +229,13 @@ public class WorkSiteController {
     @CrossOrigin
     @ResponseBody
     @Operation(tags = { "WorkSite" }, description = "Set signature and satisfaction")
-    public void uploadSignatureAndSatisfaction(@PathVariable UUID id, @RequestParam("image") MultipartFile signature,
+    public void uploadSignatureAndSatisfaction(@PathVariable UUID id, @RequestParam("image") String signature,
             @RequestParam("satisfaction") SatisfactionLevel satisfaction) {
 
         WorkSite workSite = findWorkSite(id);
 
         try {
-            workSite.setSignature(signature.getBytes());
+            workSite.setSignature(signature);
             workSite.setSatisfaction(satisfaction);
 
             workSiteDAO.save(workSite);
@@ -284,34 +280,7 @@ public class WorkSiteController {
     @CrossOrigin
     @ResponseBody
     @Operation(tags = { "WorkSite", "Incident" }, description = "Add evidence to an incident")
-    public IncidentData addEvidence(@PathVariable UUID id, @RequestPart("evidence") MultipartFile evidence) {
-        LOGGER.info("REST request to add evidence to incident " + id);
-
-        Optional<Incident> incident = incidentDAO.findById(id);
-        if (!incident.isPresent()) {
-            LOGGER.info("incident " + id + " not found");
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
-        }
-
-        Incident foundIncident = incident.get();
-        try {
-            foundIncident.addEvidence(evidence.getBytes());
-        } catch (IOException e) {
-            LOGGER.warning("Access error on uploaded file");
-            e.printStackTrace();
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-
-        incidentDAO.save(foundIncident);
-        return new IncidentData(foundIncident);
-
-    }
-
-    @RequestMapping(value = "/v2/incident/{id}/evidences", method = RequestMethod.PUT)
-    @CrossOrigin
-    @ResponseBody
-    @Operation(tags = { "WorkSite", "Incident" }, description = "Add evidence to an incident")
-    public IncidentData addEvidence(@PathVariable UUID id, @RequestBody byte[] evidence) {
+    public IncidentData addEvidence(@PathVariable UUID id, @RequestBody String evidence) {
         LOGGER.info("REST request to add evidence to incident " + id);
 
         Optional<Incident> incident = incidentDAO.findById(id);
@@ -370,33 +339,7 @@ public class WorkSiteController {
         incidentDAO.deleteById(id);
     }
 
-
     @RequestMapping(value = "/{id}/invoice", method = RequestMethod.PUT)
-    @CrossOrigin
-    @ResponseBody
-    @Operation(tags = { "WorkSite", "Invoice" }, description = "Apply invoice to worksite")
-    public InvoiceData addInvoice(@PathVariable UUID id, @RequestPart("invoice") InvoiceDTO invoiceDTO,
-            @RequestPart("file") MultipartFile file) {
-        LOGGER.info("REST request to apply invoice " + invoiceDTO + " to workSite " + id);
-
-        WorkSite workSite = findWorkSite(id);
-
-        try {
-            Invoice invoice = new Invoice(workSite, file.getBytes(), invoiceDTO.getTitle(), invoiceDTO.getDescription(),
-                    invoiceDTO.getAmount(), FilenameUtils.getExtension(file.getOriginalFilename()));
-            workSite.addInvoice(invoice);
-            workSiteDAO.save(workSite);
-            invoiceDAO.save(invoice);
-            return new InvoiceData(invoice);
-
-        } catch (IOException e) {
-            LOGGER.warning("Access error on uploaded file");
-            e.printStackTrace();
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-    }
-
-    @RequestMapping(value = "/v2/{id}/invoice", method = RequestMethod.PUT)
     @CrossOrigin
     @ResponseBody
     @Operation(tags = { "WorkSite", "Invoice" }, description = "Apply invoice to worksite")
@@ -405,34 +348,12 @@ public class WorkSiteController {
 
         WorkSite workSite = findWorkSite(id);
 
-        Invoice invoice = new Invoice(workSite, null, invoiceDTO.getTitle(), invoiceDTO.getDescription(), invoiceDTO.getAmount(), null);
+        Invoice invoice = new Invoice(workSite, invoiceDTO.getInvoiceFile(), invoiceDTO.getTitle(), invoiceDTO.getDescription(), invoiceDTO.getAmount(), invoiceDTO.getFileExtension());
         workSite.addInvoice(invoice);
         workSiteDAO.save(workSite);
         invoiceDAO.save(invoice);
 
         return new InvoiceData(invoice);
-    }
-
-    @RequestMapping(value = "/v2/invoice/{id}/file", method = RequestMethod.PUT)
-    @CrossOrigin
-    @ResponseBody
-    @Operation(tags = { "WorkSite", "Invoice" }, description = "Add invoice file to a invoice id")
-    public InvoiceData addInvoiceFile(@PathVariable UUID id, @RequestParam String fileExtension, @RequestBody byte[] file) {
-        LOGGER.info("REST request to upload a file to invoice " + id);
-
-        Optional<Invoice> invoice = invoiceDAO.findById(id);
-        if (!invoice.isPresent()) {
-            LOGGER.info("invoice " + id + " not found");
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
-        }
-
-        Invoice foundInvoice = invoice.get();
-        foundInvoice.setInvoice(file);
-        foundInvoice.setFileExtension(fileExtension);
-
-        invoiceDAO.save(foundInvoice);
-        return new InvoiceData(foundInvoice);
-
     }
 
     @RequestMapping(value = "/{id}/invoices", method = RequestMethod.GET)
