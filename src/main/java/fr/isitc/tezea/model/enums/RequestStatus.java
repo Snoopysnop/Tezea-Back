@@ -4,6 +4,6 @@ public enum RequestStatus {
     ToComplete,
     Standby,
     Done,
-    Archived
+    Archive
 
 }

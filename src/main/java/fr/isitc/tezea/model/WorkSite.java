@@ -70,7 +70,7 @@ public class WorkSite implements Serializable {
     @Column(name = "satisfaction")
     private SatisfactionLevel satisfaction;
 
-    @Column(name = "signature")
+    @Column(name = "signature", columnDefinition = "LONGTEXT")
     private String signature;
 
     @Column(name = "address")

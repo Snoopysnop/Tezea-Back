@@ -26,7 +26,7 @@ public class Invoice implements Serializable {
     @JoinColumn(name = "work_site_id")
     private WorkSite workSite;
 
-    @Column(name = "invoice")
+    @Column(name = "invoice", columnDefinition = "LONGTEXT")
     private String invoice;
 
     @Column(name = "title")
