@@ -1,8 +1,10 @@
 package fr.isitc.tezea.web;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
@@ -20,8 +22,10 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
 import fr.isitc.tezea.DAO.IncidentDAO;
+import fr.isitc.tezea.DAO.ToolUsageDAO;
 import fr.isitc.tezea.DAO.UserDAO;
 import fr.isitc.tezea.DAO.WorkSiteDAO;
+import fr.isitc.tezea.model.ToolUsage;
 import fr.isitc.tezea.model.User;
 import fr.isitc.tezea.model.WorkSite;
 import fr.isitc.tezea.model.WorkSiteRequest;
@@ -49,6 +53,9 @@ public class UserController {
     @Autowired
     private IncidentDAO incidentDAO;
 
+    @Autowired
+    private ToolUsageDAO toolUsageDAO;
+
     private User findUser(UUID id) {
         Optional<User> user = userDAO.findById(id);
 
@@ -58,6 +65,14 @@ public class UserController {
         }
 
         return user.get();
+    }
+
+        private Map<String, Integer> getWorkSiteEquipments(WorkSite workSite) {
+        Map<String, Integer> equipments = new HashMap<>();
+        for (ToolUsage tu : toolUsageDAO.findByWorkSite(workSite)) {
+            equipments.put(tu.getTool().getName(), tu.getQuantity());
+        }
+        return equipments;
     }
 
     @RequestMapping(method = RequestMethod.GET)
@@ -247,7 +262,10 @@ public class UserController {
             // check if workSite has incidents
             boolean hasIncidents = !incidentDAO.findByWorkSite(workSite).isEmpty();
 
-            datas.add(new WorkSiteAndRequestData(new WorkSiteData(workSite), request, hasIncidents));
+            WorkSiteData workSiteData = new WorkSiteData(workSite);
+            workSiteData.setEquipments(getWorkSiteEquipments(workSite));
+            
+            datas.add(new WorkSiteAndRequestData(workSiteData, request, hasIncidents));
         }
 
         return datas;
