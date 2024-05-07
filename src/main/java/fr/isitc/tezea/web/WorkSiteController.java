@@ -330,6 +330,29 @@ public class WorkSiteController {
         return data;
     }
 
+
+    @RequestMapping(value = "/hasIncidents", method = RequestMethod.GET)
+    @CrossOrigin
+    @ResponseBody
+    @Operation(tags = { "WorkSite", "Incident" }, description = "Get worksites with incidents")
+    public List<WorkSiteData> getWorkSitesWithIncident(){
+        LOGGER.info("REST request to work sites with incidents");
+
+        List<WorkSiteData> workSites = new ArrayList<>();
+        Sort sort = Sort.by(Sort.Direction.ASC, "begin");
+
+        for (WorkSite workSite : workSiteDAO.findAll(sort)) {
+            if(!workSiteDAO.findIncidentById(workSite.getId()).isEmpty()) {
+
+                WorkSiteData data = new WorkSiteData(workSite);
+                data.setEquipments(getWorkSiteEquipments(workSite));
+                workSites.add(data);
+            }
+        }
+
+        return workSites;
+    }
+
     @RequestMapping(value = "/incident/{id}", method = RequestMethod.DELETE)
     @CrossOrigin
     @ResponseBody
