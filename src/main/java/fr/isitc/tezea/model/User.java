@@ -58,7 +58,7 @@ public class User implements Serializable {
     private Set<WorkSite> ownedWorkSites = new HashSet<>();
 
     @Column(name = "profilePicture")
-    private byte[] profilePicture;
+    private String profilePicture;
 
     protected User() {
 

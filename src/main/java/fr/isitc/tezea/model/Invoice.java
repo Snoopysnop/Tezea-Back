@@ -26,8 +26,8 @@ public class Invoice implements Serializable {
     @JoinColumn(name = "work_site_id")
     private WorkSite workSite;
 
-    @Column(name = "invoice")
-    private byte[] invoice;
+    @Column(name = "invoice", columnDefinition = "LONGTEXT")
+    private String invoice;
 
     @Column(name = "title")
     private String title;
@@ -36,7 +36,7 @@ public class Invoice implements Serializable {
     private String description;
 
     @Column(name = "amount")
-    private int amount;
+    private double amount;
 
     @Column(name = "file_extension")
     private String fileExtension;
@@ -45,7 +45,7 @@ public class Invoice implements Serializable {
         
     }
 
-    public Invoice(WorkSite workSite, byte[] invoice, String title, String description, int amount, String fileExtension) {
+    public Invoice(WorkSite workSite, String invoice, String title, String description, double amount, String fileExtension) {
         this.workSite = workSite;
         this.invoice = invoice;
         this.title = title;
