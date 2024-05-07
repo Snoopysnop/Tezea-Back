@@ -229,7 +229,7 @@ public class WorkSiteController {
     @CrossOrigin
     @ResponseBody
     @Operation(tags = { "WorkSite" }, description = "Set signature and satisfaction")
-    public void uploadSignatureAndSatisfaction(@PathVariable UUID id, @RequestParam("image") String signature,
+    public void uploadSignatureAndSatisfaction(@PathVariable UUID id, @RequestBody String signature,
             @RequestParam("satisfaction") SatisfactionLevel satisfaction) {
 
         WorkSite workSite = findWorkSite(id);
@@ -290,7 +290,7 @@ public class WorkSiteController {
         }
 
         Incident foundIncident = incident.get();
-            foundIncident.addEvidence(evidence);
+        foundIncident.addEvidence(evidence);
 
         incidentDAO.save(foundIncident);
         return new IncidentData(foundIncident);
@@ -334,7 +334,7 @@ public class WorkSiteController {
     @CrossOrigin
     @ResponseBody
     @Operation(tags = { "WorkSite", "Incident" }, description = "Delete incident by id")
-    public void deleteIncident(@PathVariable UUID id){
+    public void deleteIncident(@PathVariable UUID id) {
         LOGGER.info("REST request to delete incident " + id);
         incidentDAO.deleteById(id);
     }
@@ -348,7 +348,8 @@ public class WorkSiteController {
 
         WorkSite workSite = findWorkSite(id);
 
-        Invoice invoice = new Invoice(workSite, invoiceDTO.getInvoiceFile(), invoiceDTO.getTitle(), invoiceDTO.getDescription(), invoiceDTO.getAmount(), invoiceDTO.getFileExtension());
+        Invoice invoice = new Invoice(workSite, invoiceDTO.getInvoiceFile(), invoiceDTO.getTitle(),
+                invoiceDTO.getDescription(), invoiceDTO.getAmount(), invoiceDTO.getFileExtension());
         workSite.addInvoice(invoice);
         workSiteDAO.save(workSite);
         invoiceDAO.save(invoice);
@@ -376,7 +377,7 @@ public class WorkSiteController {
     @CrossOrigin
     @ResponseBody
     @Operation(tags = { "WorkSite", "Invoice" }, description = "Delete invoice by id")
-    public void deleteInvoice(@PathVariable UUID id){
+    public void deleteInvoice(@PathVariable UUID id) {
         LOGGER.info("REST request to delete invoice " + id);
         invoiceDAO.deleteById(id);
     }
