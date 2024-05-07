@@ -27,8 +27,6 @@ customer=$(curl -s -X 'POST' \
   }'
 )
 
-customer_id=$(getField "$customer" "id")
-
 # create users
 bruno=$(curl -X 'POST' \
   $url'/users/create' \
@@ -236,6 +234,8 @@ curl -X 'POST' \
     "equipments": {
       "Pelle": 2
     }
+    "address": "3 Rue de Rennes",
+    "title": "1er chantier"
 }'
 
 curl -X 'POST' \
@@ -253,6 +253,8 @@ curl -X 'POST' \
     "equipments": {
       "Palette": 8
     }
+    "address": "15 Rue de Rennes",
+    "title": "2e chantier"
 }'
 
 curl -X 'POST' \
@@ -271,6 +273,8 @@ curl -X 'POST' \
       "Pelle" : 3,
       "Palette": 1
     }
+    "address": "7 Rue de Rennes",
+    "title": "3e chantier"
 }'
 
 curl -X 'POST' \
@@ -289,6 +293,8 @@ curl -X 'POST' \
       "Pelle" : 1,
       "Palette": 2
     }
+    "address": "12 Rue De Paris",
+    "title": "Chantier 1"
 }'
 
 curl -X 'POST' \
@@ -306,4 +312,6 @@ curl -X 'POST' \
     "equipments": {
       "Pelle": 1
     }
+    "address": "12 Rue de Paris",
+    "title": "Chantier 2"
 }'
