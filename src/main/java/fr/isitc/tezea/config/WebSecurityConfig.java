@@ -27,7 +27,10 @@ public class WebSecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
         httpSecurity.authorizeHttpRequests(registry -> {
             try {
-                registry.requestMatchers("/api/**").hasRole("WORKSITECHIEF")
+                registry.requestMatchers("/api/users/create").permitAll()
+                .requestMatchers("/api/**").permitAll()
+                        // .requestMatchers("/api/worksiteRequest/**").hasAnyRole("WORKSITECHIEF", "SITECHIEF")
+                        // .requestMatchers("/api/**").hasAnyRole("WORKSITECHIEF", "SITECHIEF", "EMPLOYEE", "CONCIERGE", "COMMERCIAL")
                         .anyRequest().authenticated();
             } catch (Exception e) {
                 e.printStackTrace();

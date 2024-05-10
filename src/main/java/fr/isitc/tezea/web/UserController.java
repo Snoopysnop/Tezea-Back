@@ -121,7 +121,7 @@ public class UserController {
         return users;
     }
 
-        @RequestMapping(value = "/create", method=RequestMethod.POST)
+    @RequestMapping(value = "/create", method=RequestMethod.POST)
     @CrossOrigin
     @ResponseBody
     @Operation(tags = { "User" }, description = "Create an user")
