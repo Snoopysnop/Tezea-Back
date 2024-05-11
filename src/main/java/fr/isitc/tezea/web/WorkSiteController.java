@@ -38,6 +38,7 @@ import fr.isitc.tezea.model.Tool;
 import fr.isitc.tezea.model.Invoice;
 import fr.isitc.tezea.model.WorkSite;
 import fr.isitc.tezea.model.WorkSiteRequest;
+import fr.isitc.tezea.model.enums.Role;
 import fr.isitc.tezea.model.enums.SatisfactionLevel;
 import fr.isitc.tezea.model.enums.WorkSiteStatus;
 import fr.isitc.tezea.service.DTO.IncidentDTO;
@@ -157,18 +158,18 @@ public class WorkSiteController {
         Set<User> staff = new HashSet<>();
 
         for (UUID employeeID : workSiteDTO.getStaff()) {
-            Optional<User> user = userDAO.findById(employeeID);
+            Optional<User> user = userDAO.findByIdAndRole(employeeID, Role.Employee);
             if (!user.isPresent()) {
-                LOGGER.info("user " + employeeID + " not found");
-                throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+                LOGGER.info("Employee " + employeeID + " not found");
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
             }
             staff.add(user.get());
         }
 
-        Optional<User> workSiteChief = userDAO.findById(workSiteDTO.getWorkSiteChief());
+        Optional<User> workSiteChief = userDAO.findByIdAndRole(workSiteDTO.getWorkSiteChief(), Role.WorkSiteChief);
         if (!workSiteChief.isPresent()) {
-            LOGGER.info("user " + workSiteDTO.getWorkSiteChief() + " not found");
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+            LOGGER.info("Worksite chief " + workSiteDTO.getWorkSiteChief() + " not found");
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
         }
 
         Optional<WorkSiteRequest> workSiteRequest = workSiteRequestDAO.findById(workSiteDTO.getWorkSiteRequest());

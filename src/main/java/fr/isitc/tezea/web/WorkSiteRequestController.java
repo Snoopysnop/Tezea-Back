@@ -108,12 +108,12 @@ public class WorkSiteRequestController {
 
         User concierge = null;
         if (workSiteRequestDTO.getConcierge() != null) {
-            concierge = userDAO.findById(workSiteRequestDTO.getConcierge()).get();
+            concierge = userDAO.findByIdAndRole(workSiteRequestDTO.getConcierge(), Role.Concierge).get();
         }
 
         User siteChief = null;
         if (workSiteRequestDTO.getSiteChief() != null) {
-            siteChief = userDAO.findById(workSiteRequestDTO.getSiteChief()).get();
+            siteChief = userDAO.findByIdAndRole(workSiteRequestDTO.getSiteChief(), Role.SiteChief).get();
         }
 
         Customer customer = null;
