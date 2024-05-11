@@ -1,7 +1,9 @@
 package fr.isitc.tezea.service.data;
 
+import java.util.Set;
 import java.util.UUID;
 
+import fr.isitc.tezea.model.ToolUsage;
 import fr.isitc.tezea.model.WorkSite;
 import fr.isitc.tezea.model.enums.SatisfactionLevel;
 import fr.isitc.tezea.model.enums.WorkSiteStatus;
@@ -19,8 +21,8 @@ public class WorkSiteData extends WorkSiteDTO {
     private String signature;
     private String comment;
 
-    public WorkSiteData(WorkSite workSite) {
-        super(workSite);
+    public WorkSiteData(WorkSite workSite, Set<ToolUsage> equipments) {
+        super(workSite, equipments);
         this.id = workSite.getId();
         this.satisfaction = workSite.getSatisfaction();
         this.status = workSite.getStatus();

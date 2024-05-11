@@ -1,6 +1,9 @@
 package fr.isitc.tezea.model;
 
 import java.io.Serializable;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
 
 import jakarta.persistence.Column;
@@ -35,6 +38,14 @@ public class ToolUsage implements Serializable {
 
     protected ToolUsage() {
 
+    }
+
+    public static Map<String, Integer> toMap(Set<ToolUsage> toolUsages){
+        Map<String, Integer> equipments = new HashMap<>();
+        for (ToolUsage tu : toolUsages) {
+            equipments.put(tu.getTool().getName(), tu.getQuantity());
+        }
+        return equipments;
     }
 
     public ToolUsage(Tool tool, WorkSite workSite, int quantity) {
