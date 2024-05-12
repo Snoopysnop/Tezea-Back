@@ -1,10 +1,8 @@
 package fr.isitc.tezea.web;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
@@ -38,6 +36,7 @@ import fr.isitc.tezea.model.Tool;
 import fr.isitc.tezea.model.Invoice;
 import fr.isitc.tezea.model.WorkSite;
 import fr.isitc.tezea.model.WorkSiteRequest;
+import fr.isitc.tezea.model.enums.Role;
 import fr.isitc.tezea.model.enums.SatisfactionLevel;
 import fr.isitc.tezea.model.enums.WorkSiteStatus;
 import fr.isitc.tezea.service.DTO.IncidentDTO;
@@ -87,14 +86,6 @@ public class WorkSiteController {
         return workSite.get();
     }
 
-    private Map<String, Integer> getWorkSiteEquipments(WorkSite workSite) {
-        Map<String, Integer> equipments = new HashMap<>();
-        for (ToolUsage tu : toolUsageDAO.findByWorkSite(workSite)) {
-            equipments.put(tu.getTool().getName(), tu.getQuantity());
-        }
-        return equipments;
-    }
-
     @RequestMapping(method = RequestMethod.GET)
     @CrossOrigin
     @ResponseBody
@@ -106,8 +97,7 @@ public class WorkSiteController {
         Sort sort = Sort.by(Sort.Direction.ASC, "begin");
 
         for (WorkSite workSite : workSiteDAO.findAll(sort)) {
-            WorkSiteData data = new WorkSiteData(workSite);
-            data.setEquipments(getWorkSiteEquipments(workSite));
+            WorkSiteData data = new WorkSiteData(workSite, toolUsageDAO.findByWorkSite(workSite));
             workSites.add(data);
         }
 
@@ -121,9 +111,8 @@ public class WorkSiteController {
     public WorkSiteData findById(@PathVariable UUID id) {
 
         WorkSite worksite = findWorkSite(id);
-        WorkSiteData data = new WorkSiteData(worksite);
+        WorkSiteData data = new WorkSiteData(worksite, toolUsageDAO.findByWorkSite(worksite));
 
-        data.setEquipments(getWorkSiteEquipments(worksite));
         return data;
     }
 
@@ -158,18 +147,18 @@ public class WorkSiteController {
         Set<User> staff = new HashSet<>();
 
         for (UUID employeeID : workSiteDTO.getStaff()) {
-            Optional<User> user = userDAO.findById(employeeID);
+            Optional<User> user = userDAO.findByIdAndRole(employeeID, Role.Employee);
             if (!user.isPresent()) {
-                LOGGER.info("user " + employeeID + " not found");
-                throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+                LOGGER.info("Employee " + employeeID + " not found");
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
             }
             staff.add(user.get());
         }
 
-        Optional<User> workSiteChief = userDAO.findById(workSiteDTO.getWorkSiteChief());
+        Optional<User> workSiteChief = userDAO.findByIdAndRole(workSiteDTO.getWorkSiteChief(), Role.WorkSiteChief);
         if (!workSiteChief.isPresent()) {
-            LOGGER.info("user " + workSiteDTO.getWorkSiteChief() + " not found");
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+            LOGGER.info("Worksite chief " + workSiteDTO.getWorkSiteChief() + " not found");
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
         }
 
         Optional<WorkSiteRequest> workSiteRequest = workSiteRequestDAO.findById(workSiteDTO.getWorkSiteRequest());
@@ -206,7 +195,7 @@ public class WorkSiteController {
             toolUsageDAO.save(toolUsage);
         }
 
-        return new WorkSiteData(newWorkSite);
+        return new WorkSiteData(newWorkSite, toolUsageDAO.findByWorkSite(newWorkSite));
     }
 
     @RequestMapping(value = "/{id}/upload_comment", method = RequestMethod.PUT)
@@ -345,8 +334,7 @@ public class WorkSiteController {
         for (WorkSite workSite : workSiteDAO.findAll(sort)) {
             if(!workSiteDAO.findIncidentById(workSite.getId()).isEmpty()) {
 
-                WorkSiteData data = new WorkSiteData(workSite);
-                data.setEquipments(getWorkSiteEquipments(workSite));
+                WorkSiteData data = new WorkSiteData(workSite, toolUsageDAO.findByWorkSite(workSite));
                 workSites.add(data);
             }
         }

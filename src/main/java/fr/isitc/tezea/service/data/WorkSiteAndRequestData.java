@@ -26,6 +26,9 @@ public class WorkSiteAndRequestData implements Serializable {
     private WorkSiteStatus status;
     private String signature;
     private boolean hasIncidents;
+    private String address;
+    private String title;
+    private String comment;
 
     
     public WorkSiteAndRequestData(WorkSiteData worksite, WorkSiteRequestData request, boolean hasIncidents) {
@@ -41,6 +44,9 @@ public class WorkSiteAndRequestData implements Serializable {
         this.status = worksite.getStatus();
         this.signature = worksite.getSignature();
         this.hasIncidents = hasIncidents;
+        this.address = worksite.getAddress();
+        this.title = worksite.getTitle();
+        this.comment = worksite.getComment();
         
     }
 

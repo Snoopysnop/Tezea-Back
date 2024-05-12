@@ -32,3 +32,6 @@ deploy-job:
     - docker-compose down
     - docker-compose up -d
     - echo "Application successfully deployed."
+    - echo "Remove all unused containers, networks, images (both dangling and unused) and volumes..."
+    - docker system prune -f --volumes --all
+    - echo "Cleaning complete"
