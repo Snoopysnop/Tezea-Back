@@ -6,6 +6,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
+import fr.isitc.tezea.model.ToolUsage;
 import fr.isitc.tezea.model.WorkSite;
 
 import java.io.Serializable;
@@ -28,7 +29,7 @@ public class WorkSiteDTO implements Serializable {
     protected WorkSiteDTO() {
     }
 
-    public WorkSiteDTO(WorkSite workSite) {
+    public WorkSiteDTO(WorkSite workSite, Set<ToolUsage> equipments) {
         this.workSiteRequest = workSite.getRequest() == null ? null : workSite.getRequest().getId();
         this.workSiteChief = workSite.getWorkSiteChief() == null ? null : workSite.getWorkSiteChief().getId();
         this.begin = workSite.getBegin();
@@ -36,9 +37,7 @@ public class WorkSiteDTO implements Serializable {
         if (workSite.getStaff() != null) {
             workSite.getStaff().forEach(employee -> staff.add(employee.getId()));
         }
-        if (workSite.getEquipments() != null) {
-            workSite.getEquipments().forEach(tool -> equipments.put(tool.getTool().getName(), tool.getQuantity()));
-        }
+        this.equipments = ToolUsage.toMap(equipments);
         this.address = workSite.getAddress();
         this.title = workSite.getTitle();
 

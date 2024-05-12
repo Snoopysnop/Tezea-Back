@@ -1,10 +1,8 @@
 package fr.isitc.tezea.web;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
@@ -87,14 +85,6 @@ public class WorkSiteController {
         return workSite.get();
     }
 
-    private Map<String, Integer> getWorkSiteEquipments(WorkSite workSite) {
-        Map<String, Integer> equipments = new HashMap<>();
-        for (ToolUsage tu : toolUsageDAO.findByWorkSite(workSite)) {
-            equipments.put(tu.getTool().getName(), tu.getQuantity());
-        }
-        return equipments;
-    }
-
     @RequestMapping(method = RequestMethod.GET)
     @CrossOrigin
     @ResponseBody
@@ -106,8 +96,7 @@ public class WorkSiteController {
         Sort sort = Sort.by(Sort.Direction.ASC, "begin");
 
         for (WorkSite workSite : workSiteDAO.findAll(sort)) {
-            WorkSiteData data = new WorkSiteData(workSite);
-            data.setEquipments(getWorkSiteEquipments(workSite));
+            WorkSiteData data = new WorkSiteData(workSite, toolUsageDAO.findByWorkSite(workSite));
             workSites.add(data);
         }
 
@@ -121,9 +110,8 @@ public class WorkSiteController {
     public WorkSiteData findById(@PathVariable UUID id) {
 
         WorkSite worksite = findWorkSite(id);
-        WorkSiteData data = new WorkSiteData(worksite);
+        WorkSiteData data = new WorkSiteData(worksite, toolUsageDAO.findByWorkSite(worksite));
 
-        data.setEquipments(getWorkSiteEquipments(worksite));
         return data;
     }
 
@@ -205,10 +193,10 @@ public class WorkSiteController {
             toolUsageDAO.save(toolUsage);
         }
 
-        return new WorkSiteData(newWorkSite);
+        return new WorkSiteData(newWorkSite, toolUsageDAO.findByWorkSite(newWorkSite));
     }
 
-    @RequestMapping(value = "/{id}/upload_comment", method = RequestMethod.PUT)
+    @RequestMapping(value = "/{id}/upload_comment", method = RequestMethod.PUT, consumes="text/plain")
     @CrossOrigin
     @ResponseBody
     @Operation(tags = { "WorkSite" }, description = "Set comment")
@@ -344,8 +332,7 @@ public class WorkSiteController {
         for (WorkSite workSite : workSiteDAO.findAll(sort)) {
             if(!workSiteDAO.findIncidentById(workSite.getId()).isEmpty()) {
 
-                WorkSiteData data = new WorkSiteData(workSite);
-                data.setEquipments(getWorkSiteEquipments(workSite));
+                WorkSiteData data = new WorkSiteData(workSite, toolUsageDAO.findByWorkSite(workSite));
                 workSites.add(data);
             }
         }
