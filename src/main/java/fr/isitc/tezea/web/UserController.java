@@ -175,6 +175,16 @@ public class UserController {
         return new UserData(userDAO.findFirstByRole(Role.Concierge));
     }
 
+    @RequestMapping(value = "/WorkSiteChief", method = RequestMethod.GET)
+    @CrossOrigin
+    @ResponseBody
+    @Operation(tags = { "WorkSiteChief" }, description = "Find a work site chief")
+    public UserData findWorkSiteChief() {
+        LOGGER.info("REST request to find a work site chief");
+
+        return new UserData(userDAO.findFirstByRole(Role.WorkSiteChief));
+    }
+
     @RequestMapping(value = "/staff/availabilities", method = RequestMethod.POST)
     @CrossOrigin
     @ResponseBody
@@ -285,7 +295,7 @@ public class UserController {
             boolean hasIncidents = !incidentDAO.findByWorkSite(workSite).isEmpty();
 
             WorkSiteData workSiteData = new WorkSiteData(workSite, toolUsageDAO.findByWorkSite(workSite));
-            
+
             datas.add(new WorkSiteAndRequestData(workSiteData, request, hasIncidents));
         }
 
