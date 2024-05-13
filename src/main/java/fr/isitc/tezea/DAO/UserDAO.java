@@ -19,6 +19,8 @@ public interface UserDAO extends JpaRepository<User, UUID> {
 
     public Set<User> findByRole(Role role);
 
+    Optional<User> findByEmail(String email);
+
     User findFirstByRole(Role role);
 
     Optional<User> findByIdAndRole(UUID id, Role role);
