@@ -13,11 +13,6 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
 import org.springframework.security.web.SecurityFilterChain;
 
-
-/**
- * @author : Olivier Barais
- * @created : 20-10-2023
- */
 @Configuration
 @EnableWebSecurity
 public class WebSecurityConfig {
