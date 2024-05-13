@@ -44,7 +44,7 @@ public class WebSecurityConfig {
 
                     });
                     return new JwtAuthenticationToken(jwt, grantedAuthorities);
-                })));
+                }))).csrf((csrf) -> csrf.disable());
         return httpSecurity.build();
     }
 }
