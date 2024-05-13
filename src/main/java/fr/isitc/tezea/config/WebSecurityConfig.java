@@ -24,6 +24,9 @@ public class WebSecurityConfig {
             try {
                 registry.requestMatchers("/api/users/create").permitAll()
                 .requestMatchers("/api/**").permitAll()
+                .requestMatchers("/api/**").permitAll()
+                .requestMatchers("/swagger-ui/**").permitAll()
+
                         // .requestMatchers("/api/worksiteRequest/**").hasAnyRole("WORKSITECHIEF", "SITECHIEF")
                         // .requestMatchers("/api/**").hasAnyRole("WORKSITECHIEF", "SITECHIEF", "EMPLOYEE", "CONCIERGE", "COMMERCIAL")
                         .anyRequest().authenticated();
