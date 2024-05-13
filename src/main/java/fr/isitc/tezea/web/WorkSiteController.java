@@ -110,6 +110,7 @@ public class WorkSiteController {
     @ResponseBody
     @Operation(tags = { "WorkSite" }, description = "Returns the work site {id}")
     public WorkSiteData findById(@PathVariable UUID id) {
+        LOGGER.info("REST request to find user with id " + id);
 
         WorkSite worksite = findWorkSite(id);
         WorkSiteData data = new WorkSiteData(worksite, toolUsageDAO.findByWorkSite(worksite));
@@ -217,6 +218,7 @@ public class WorkSiteController {
     @ResponseBody
     @Operation(tags = { "WorkSite" }, description = "Set comment")
     public void uploadComment(@PathVariable UUID id, @RequestBody String comment) {
+        LOGGER.info("REST put comment " + comment + " to update worksite " + id);
 
         WorkSite workSite = findWorkSite(id);
 
@@ -235,6 +237,7 @@ public class WorkSiteController {
     @Operation(tags = { "WorkSite" }, description = "Set signature and satisfaction")
     public void uploadSignatureAndSatisfaction(@PathVariable UUID id, @RequestBody String signature,
             @RequestParam("satisfaction") SatisfactionLevel satisfaction) {
+        LOGGER.info("REST request to upload signature and set satisfaction to " + signature  + " on workSite " + id);
 
         WorkSite workSite = findWorkSite(id);
 
@@ -254,6 +257,7 @@ public class WorkSiteController {
     @ResponseBody
     @Operation(tags = { "WorkSite" }, description = "Update status of a work site")
     public void updateStatus(@PathVariable UUID id, @RequestParam("status") WorkSiteStatus status) {
+        LOGGER.info("REST request to set status to " + status + " on worksite " + id);
 
         WorkSite workSite = findWorkSite(id);
 
