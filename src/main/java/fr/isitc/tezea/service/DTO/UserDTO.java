@@ -29,4 +29,10 @@ public class UserDTO implements Serializable {
         this.profilePicture = user.getProfilePicture();
     }
 
+	@Override
+	public String toString() {
+		return "UserDTO [firstName=" + firstName + ", lastName=" + lastName + ", role=" + role + ", email=" + email
+				+ ", phoneNumber=" + phoneNumber + "]";
+	}
+
 }

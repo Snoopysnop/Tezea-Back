@@ -140,7 +140,7 @@ public class UserController {
     @ResponseBody
     @Operation(tags = { "User" }, description = "Update user profile picture")
     public UserData updateProfilePicture(@PathVariable UUID id, @RequestBody String profilePicture) {
-        LOGGER.info("REST request to update user " + id + " profile picture with " + profilePicture);
+        LOGGER.info("REST request to update user " + id + " profile picture");
 
         User user = findUser(id);
         user.setProfilePicture(profilePicture);
