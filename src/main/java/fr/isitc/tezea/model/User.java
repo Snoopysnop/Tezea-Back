@@ -74,18 +74,15 @@ public class User implements Serializable {
 
     }
 
-    public boolean addWorkSite(WorkSite workSite) {
+    public boolean isAvailable(TimeLine timeLine, Set<WorkSite> workSites) {
 
         // check conflicts
-        TimeLine timeLine = new TimeLine(workSite.getBegin(), workSite.getEnd());
-        for (WorkSite userWorkSites : this.workSites) {
+        for (WorkSite userWorkSites : workSites) {
             if (TimeLine.areTimelineInConcurrence(timeLine,
                     new TimeLine(userWorkSites.getBegin(), userWorkSites.getEnd()))) {
                 return false;
             }
         }
-
-        this.workSites.add(workSite);
         return true;
     }
 
