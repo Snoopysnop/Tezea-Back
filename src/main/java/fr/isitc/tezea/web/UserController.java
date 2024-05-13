@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -94,6 +95,21 @@ public class UserController {
 
         User user = findUser(id);
         return new UserData(user);
+    }
+
+    @RequestMapping(value = "/email", method = RequestMethod.GET)
+    @CrossOrigin
+    @ResponseBody
+    @Operation(tags = { "User" }, description = "Finds user by email")
+    public UserData findByEmail(@RequestParam String email) {
+        LOGGER.info("REST request to find user with email " + email);
+
+        Optional<User> user = userDAO.findByEmail(email);
+        if (!user.isPresent()) {
+            LOGGER.info("User with email " + email + " not found");
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+        }
+        return new UserData(user.get());
     }
 
     @RequestMapping(value = "/findSomeUsers", method = RequestMethod.POST)
