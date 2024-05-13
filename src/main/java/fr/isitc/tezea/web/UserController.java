@@ -156,6 +156,16 @@ public class UserController {
         return new UserData(userDAO.findFirstByRole(Role.Concierge));
     }
 
+    @RequestMapping(value = "/SiteChief", method = RequestMethod.GET)
+    @CrossOrigin
+    @ResponseBody
+    @Operation(tags = { "SiteChief" }, description = "Find a site chief")
+    public UserData findSiteChief() {
+        LOGGER.info("REST request to find a site chief");
+
+        return new UserData(userDAO.findFirstByRole(Role.SiteChief));
+    }
+
     @RequestMapping(value = "/WorkSiteChief", method = RequestMethod.GET)
     @CrossOrigin
     @ResponseBody
