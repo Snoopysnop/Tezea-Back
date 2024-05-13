@@ -116,6 +116,20 @@ public class UserController {
         return new UserData(user);
     }
 
+    @RequestMapping(value = "/{id}/profilePicture", method = RequestMethod.POST)
+    @CrossOrigin
+    @ResponseBody
+    @Operation(tags = { "User" }, description = "Update user profile picture")
+    public UserData updateProfilePicture(@PathVariable UUID id, @RequestBody String profilePicture) {
+        LOGGER.info("REST request to update user " + id + " profile picture with " + profilePicture);
+
+        User user = findUser(id);
+        user.setProfilePicture(profilePicture);
+        userDAO.save(user);
+
+        return new UserData(user);
+    }
+
     @RequestMapping(value = "/{role}", method = RequestMethod.POST)
     @CrossOrigin
     @ResponseBody

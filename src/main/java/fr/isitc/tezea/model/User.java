@@ -57,7 +57,7 @@ public class User implements Serializable {
     @OneToMany(mappedBy = "workSiteChief")
     private Set<WorkSite> ownedWorkSites = new HashSet<>();
 
-    @Column(name = "profilePicture")
+    @Column(name = "profilePicture", columnDefinition = "LONGTEXT")
     private String profilePicture;
 
     protected User() {
