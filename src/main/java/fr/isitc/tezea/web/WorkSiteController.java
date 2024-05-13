@@ -198,7 +198,7 @@ public class WorkSiteController {
         return new WorkSiteData(newWorkSite, toolUsageDAO.findByWorkSite(newWorkSite));
     }
 
-    @RequestMapping(value = "/{id}/upload_comment", method = RequestMethod.PUT)
+    @RequestMapping(value = "/{id}/upload_comment", method = RequestMethod.PUT, consumes="text/plain")
     @CrossOrigin
     @ResponseBody
     @Operation(tags = { "WorkSite" }, description = "Set comment")
