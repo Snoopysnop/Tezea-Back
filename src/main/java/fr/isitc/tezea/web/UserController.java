@@ -154,7 +154,7 @@ public class UserController {
     @ResponseBody
     @Operation(tags = { "User" }, description = "Find users by role")
     public Set<UserData> findbyRole(@RequestParam Role role) {
-        LOGGER.info("REST request to find users with role" + role);
+        LOGGER.info("REST request to find users with role " + role);
 
         Set<UserData> users = new HashSet<>();
 
