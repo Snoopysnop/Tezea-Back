@@ -11,7 +11,6 @@ import java.util.logging.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -88,7 +87,6 @@ public class WorkSiteController {
     }
 
     @RequestMapping(method = RequestMethod.GET)
-    @CrossOrigin
     @ResponseBody
     @Operation(tags = { "WorkSite" }, description = "Returns all work sites")
     public List<WorkSiteData> findAll() {
@@ -106,7 +104,6 @@ public class WorkSiteController {
     }
 
     @RequestMapping(value = "/{id}", method = RequestMethod.GET)
-    @CrossOrigin
     @ResponseBody
     @Operation(tags = { "WorkSite" }, description = "Returns the work site {id}")
     public WorkSiteData findById(@PathVariable UUID id) {
@@ -119,7 +116,6 @@ public class WorkSiteController {
     }
 
     @RequestMapping(value = "/{id}/allUsers", method = RequestMethod.GET)
-    @CrossOrigin
     @ResponseBody
     @Operation(tags = { "WorkSite" }, description = "Returns all the users of a work site")
     public Set<UserData> findAllUsers(@PathVariable UUID id) {
@@ -139,7 +135,6 @@ public class WorkSiteController {
     }
 
     @RequestMapping(value = "/create", method = RequestMethod.POST)
-    @CrossOrigin
     @ResponseBody
     @Operation(tags = { "WorkSite" }, description = "Create a work site")
     public WorkSiteData create(@RequestBody WorkSiteDTO workSiteDTO) {
@@ -214,7 +209,6 @@ public class WorkSiteController {
     }
 
     @RequestMapping(value = "/{id}/upload_comment", method = RequestMethod.PUT, consumes="text/plain")
-    @CrossOrigin
     @ResponseBody
     @Operation(tags = { "WorkSite" }, description = "Set comment")
     public void uploadComment(@PathVariable UUID id, @RequestBody String comment) {
@@ -232,7 +226,6 @@ public class WorkSiteController {
     }
 
     @RequestMapping(value = "/{id}/upload_signature_and_satisfaction", method = RequestMethod.PUT)
-    @CrossOrigin
     @ResponseBody
     @Operation(tags = { "WorkSite" }, description = "Set signature and satisfaction")
     public void uploadSignatureAndSatisfaction(@PathVariable UUID id, @RequestBody String signature,
@@ -253,7 +246,6 @@ public class WorkSiteController {
     }
 
     @RequestMapping(value = "/{id}/update_status", method = RequestMethod.PATCH)
-    @CrossOrigin
     @ResponseBody
     @Operation(tags = { "WorkSite" }, description = "Update status of a work site")
     public void updateStatus(@PathVariable UUID id, @RequestParam("status") WorkSiteStatus status) {
@@ -266,7 +258,6 @@ public class WorkSiteController {
     }
 
     @RequestMapping(value = "/{id}/incident", method = RequestMethod.PUT)
-    @CrossOrigin
     @ResponseBody
     @Operation(tags = { "WorkSite", "Incident" }, description = "Apply incident to worksite")
     public IncidentData addIncident(@PathVariable UUID id, @RequestBody IncidentDTO incidentDTO) {
@@ -285,7 +276,6 @@ public class WorkSiteController {
     }
 
     @RequestMapping(value = "/incident/{id}/evidences", method = RequestMethod.PUT)
-    @CrossOrigin
     @ResponseBody
     @Operation(tags = { "WorkSite", "Incident" }, description = "Add evidence to an incident")
     public IncidentData addEvidence(@PathVariable UUID id, @RequestBody String evidence) {
@@ -306,7 +296,6 @@ public class WorkSiteController {
     }
 
     @RequestMapping(value = "/{id}/incidents", method = RequestMethod.GET)
-    @CrossOrigin
     @ResponseBody
     @Operation(tags = { "WorkSite", "Incident" }, description = "Get worksite's incidents")
     public Set<IncidentData> getWorkSiteIncidents(@PathVariable UUID id) {
@@ -322,7 +311,6 @@ public class WorkSiteController {
     }
 
     @RequestMapping(value = "/incidents", method = RequestMethod.GET)
-    @CrossOrigin
     @ResponseBody
     @Operation(tags = { "WorkSite", "Incident" }, description = "Get all incidents")
     public Set<IncidentData> findAllIncidents() {
@@ -340,7 +328,6 @@ public class WorkSiteController {
 
 
     @RequestMapping(value = "/hasIncidents", method = RequestMethod.GET)
-    @CrossOrigin
     @ResponseBody
     @Operation(tags = { "WorkSite", "Incident" }, description = "Get worksites with incidents")
     public List<WorkSiteData> getWorkSitesWithIncident(){
@@ -361,7 +348,6 @@ public class WorkSiteController {
     }
 
     @RequestMapping(value = "/incident/{id}", method = RequestMethod.DELETE)
-    @CrossOrigin
     @ResponseBody
     @Operation(tags = { "WorkSite", "Incident" }, description = "Delete incident by id")
     public void deleteIncident(@PathVariable UUID id) {
@@ -370,7 +356,6 @@ public class WorkSiteController {
     }
 
     @RequestMapping(value = "/{id}/invoice", method = RequestMethod.PUT)
-    @CrossOrigin
     @ResponseBody
     @Operation(tags = { "WorkSite", "Invoice" }, description = "Apply invoice to worksite")
     public InvoiceData addInvoice(@PathVariable UUID id, @RequestBody InvoiceDTO invoiceDTO) {
@@ -388,7 +373,6 @@ public class WorkSiteController {
     }
 
     @RequestMapping(value = "/{id}/invoices", method = RequestMethod.GET)
-    @CrossOrigin
     @ResponseBody
     @Operation(tags = { "WorkSite", "Invoice" }, description = "Get worksite's invoices")
     public Set<InvoiceData> getWorkSiteInvoices(@PathVariable UUID id) {
@@ -404,7 +388,6 @@ public class WorkSiteController {
     }
 
     @RequestMapping(value = "/invoice/{id}", method = RequestMethod.DELETE)
-    @CrossOrigin
     @ResponseBody
     @Operation(tags = { "WorkSite", "Invoice" }, description = "Delete invoice by id")
     public void deleteInvoice(@PathVariable UUID id) {

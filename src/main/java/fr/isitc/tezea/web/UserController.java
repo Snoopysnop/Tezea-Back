@@ -10,7 +10,6 @@ import java.util.logging.Logger;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -72,7 +71,6 @@ public class UserController {
     }
 
     @RequestMapping(method = RequestMethod.GET)
-    @CrossOrigin
     @ResponseBody
     @Operation(tags = { "User" }, description = "Returns all users")
     public List<UserData> findAll() {
@@ -87,7 +85,6 @@ public class UserController {
     }
 
     @RequestMapping(value = "/{id}", method = RequestMethod.GET)
-    @CrossOrigin
     @ResponseBody
     @Operation(tags = { "User" }, description = "Returns the user with the id")
     public UserData findOne(@PathVariable UUID id) {
@@ -98,7 +95,6 @@ public class UserController {
     }
 
     @RequestMapping(value = "/email", method = RequestMethod.GET)
-    @CrossOrigin
     @ResponseBody
     @Operation(tags = { "User" }, description = "Finds user by email")
     public UserData findByEmail(@RequestParam String email) {
@@ -113,7 +109,6 @@ public class UserController {
     }
 
     @RequestMapping(value = "/findSomeUsers", method = RequestMethod.POST)
-    @CrossOrigin
     @ResponseBody
     @Operation(tags = { "User" }, description = "Returns users with id present in the given list")
     public Set<UserData> findSomeUsers(@RequestBody List<UUID> uuids) {
@@ -127,7 +122,6 @@ public class UserController {
     }
 
     @RequestMapping(value = "/create", method=RequestMethod.POST)
-    @CrossOrigin
     @ResponseBody
     @Operation(tags = { "User" }, description = "Create an user")
     public UserData create(@RequestPart("user") UserDTO userDTO, @RequestPart("password") String password, @RequestPart(value = "file", required = false) MultipartFile file) {
@@ -136,7 +130,6 @@ public class UserController {
     }
 
     @RequestMapping(value = "/{id}/profilePicture", method = RequestMethod.POST)
-    @CrossOrigin
     @ResponseBody
     @Operation(tags = { "User" }, description = "Update user profile picture")
     public UserData updateProfilePicture(@PathVariable UUID id, @RequestBody String profilePicture) {
@@ -150,7 +143,6 @@ public class UserController {
     }
 
     @RequestMapping(value = "/role", method = RequestMethod.GET)
-    @CrossOrigin
     @ResponseBody
     @Operation(tags = { "User" }, description = "Find users by role")
     public Set<UserData> findbyRole(@RequestParam Role role) {
@@ -166,7 +158,6 @@ public class UserController {
     }
 
     @RequestMapping(value = "/Concierge", method = RequestMethod.GET)
-    @CrossOrigin
     @ResponseBody
     @Operation(tags = { "Concierge" }, description = "Find a concierge")
     public UserData findConcierge() {
@@ -176,7 +167,6 @@ public class UserController {
     }
 
     @RequestMapping(value = "/SiteChief", method = RequestMethod.GET)
-    @CrossOrigin
     @ResponseBody
     @Operation(tags = { "SiteChief" }, description = "Find a site chief")
     public UserData findSiteChief() {
@@ -186,7 +176,6 @@ public class UserController {
     }
 
     @RequestMapping(value = "/WorkSiteChief", method = RequestMethod.GET)
-    @CrossOrigin
     @ResponseBody
     @Operation(tags = { "WorkSiteChief" }, description = "Find a work site chief")
     public UserData findWorkSiteChief() {
@@ -196,7 +185,6 @@ public class UserController {
     }
 
     @RequestMapping(value = "/staff/availabilities", method = RequestMethod.POST)
-    @CrossOrigin
     @ResponseBody
     @Operation(tags = { "User" }, description = "Find available staff")
     public Set<UserData> getAvailableStaff(@RequestBody TimeLine timeLine) {
@@ -219,7 +207,6 @@ public class UserController {
     }
 
     @RequestMapping(value = "/workSiteChiefs/availabilities", method = RequestMethod.POST)
-    @CrossOrigin
     @ResponseBody
     @Operation(tags = { "WorkSiteChief" }, description = "Find available worksite chiefs")
     public Set<UserData> getAvailableWorkSiteChiefs(@RequestBody TimeLine timeLine) {
@@ -242,7 +229,6 @@ public class UserController {
     }
 
     @RequestMapping(value = "{id}/workSites", method = RequestMethod.GET)
-    @CrossOrigin
     @ResponseBody
     @Operation(tags = { "WorkSiteChief" }, description = "Find worksite chiefs worksites")
     public Set<WorkSiteData> getWorkSiteChiefWorkSites(@PathVariable UUID id) {
@@ -263,7 +249,6 @@ public class UserController {
     }
 
     @RequestMapping(value = "{id}/workSiteRequests", method = RequestMethod.GET)
-    @CrossOrigin
     @ResponseBody
     @Operation(tags = { "WorkSiteChief" }, description = "Find worksite chiefs worksite requests")
     public Set<WorkSiteRequestData> getWorkSiteChiefWorkSiteRequests(@PathVariable UUID id) {
@@ -284,7 +269,6 @@ public class UserController {
     }
 
     @RequestMapping(value = "{id}/allWorkSites", method = RequestMethod.GET)
-    @CrossOrigin
     @ResponseBody
     @Operation(tags = { "WorkSiteChief" }, description = "Find worksite chiefs worksite requests and workSites")
     public Set<WorkSiteAndRequestData> getWorkSiteChiefWorkSiteRequestsAndWorkSite(@PathVariable UUID id) {

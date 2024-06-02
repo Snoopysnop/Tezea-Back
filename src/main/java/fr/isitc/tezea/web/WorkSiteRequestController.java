@@ -12,7 +12,6 @@ import java.util.logging.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -67,7 +66,6 @@ public class WorkSiteRequestController {
     }
 
     @RequestMapping(method = RequestMethod.GET)
-    @CrossOrigin
     @ResponseBody
     @Operation(tags = { "WorkSiteRequest" }, description = "Returns all work site requests")
     public Set<WorkSiteRequestData> findAll(@RequestBody(required = false) String sortString) {
@@ -90,7 +88,6 @@ public class WorkSiteRequestController {
     }
 
     @RequestMapping(value = "/{id}", method = RequestMethod.GET)
-    @CrossOrigin
     @ResponseBody
     @Operation(tags = { "WorkSiteRequest" }, description = "Returns the work site request {id}")
     public WorkSiteRequestData findById(@PathVariable Integer id) {
@@ -100,7 +97,6 @@ public class WorkSiteRequestController {
     }
 
     @RequestMapping(value = "/create", method = RequestMethod.POST)
-    @CrossOrigin
     @ResponseBody
     @Operation(tags = { "WorkSiteRequest" }, description = "Create a work site request")
     public WorkSiteRequestData create(@RequestBody WorkSiteRequestDTO workSiteRequestDTO) {
@@ -128,7 +124,6 @@ public class WorkSiteRequestController {
     }
 
     @RequestMapping(value = "/{id}/patch", method = RequestMethod.PATCH)
-    @CrossOrigin
     @ResponseBody
     @Operation(tags = { "WorkSiteRequest" }, description = "Eot the work site request id")
     public WorkSiteRequestData patch(@PathVariable Integer id, @RequestBody WorkSiteRequestDTO workSiteRequestDTO){
@@ -159,7 +154,6 @@ public class WorkSiteRequestController {
     
 
     @RequestMapping(value = "/{id}/update_status", method = RequestMethod.PATCH)
-    @CrossOrigin
     @ResponseBody
     @Operation(tags = { "WorkSiteRequest" }, description = "Update status of a work site request")
     public void updateStatus(@PathVariable Integer id, @RequestParam("status") RequestStatus status) {
@@ -171,7 +165,6 @@ public class WorkSiteRequestController {
     }
 
     @RequestMapping(value = "/statistics/status", method = RequestMethod.GET)
-    @CrossOrigin
     @ResponseBody
     @Operation(tags = { "WorkSiteRequest" }, description = "Get number of worksite request by status")
     public Map<RequestStatus, Integer> getStatusStatistics() {
@@ -186,7 +179,6 @@ public class WorkSiteRequestController {
     }
 
     @RequestMapping(value = "{id}/statistics/workSiteStatus", method = RequestMethod.GET)
-    @CrossOrigin
     @ResponseBody
     @Operation(tags = { "WorkSiteRequest" }, description = "Get number of worksite status for request")
     public Map<WorkSiteStatus, Integer> getStatusStatistics(@PathVariable Integer id) {
@@ -203,7 +195,6 @@ public class WorkSiteRequestController {
     }
 
     @RequestMapping(value = "/statistics/workSitesStatus", method = RequestMethod.GET)
-    @CrossOrigin
     @ResponseBody
     @Operation(tags = { "WorkSiteRequest" }, description = "Get number of worksite status for requests")
     public Map<Integer, Map<WorkSiteStatus, Integer>> getStatusStatistics(@RequestParam Set<Integer> ids) {
@@ -224,7 +215,6 @@ public class WorkSiteRequestController {
     }
 
     @RequestMapping(value = "/statistics/cities", method = RequestMethod.GET)
-    @CrossOrigin
     @ResponseBody
     @Operation(tags = { "WorkSiteRequest" }, description = "Get number of worksite request by cites")
     public Map<String, Integer> getCitiesStatistics() {
@@ -239,7 +229,6 @@ public class WorkSiteRequestController {
     }
 
     @RequestMapping(value = "/statistics/services", method = RequestMethod.GET)
-    @CrossOrigin
     @ResponseBody
     @Operation(tags = { "WorkSiteRequest" }, description = "Get number of worksite request by service types")
     public Map<Service, Integer> getServicesStatistics() {
@@ -254,7 +243,6 @@ public class WorkSiteRequestController {
     }
 
     @RequestMapping(value = "/statistics/customers", method = RequestMethod.GET)
-    @CrossOrigin
     @ResponseBody
     @Operation(tags = { "WorkSiteRequest" }, description = "Get number of worksite request by customer status")
     public Map<CustomerStatus, Integer> getCustomerStatistics() {
@@ -269,7 +257,6 @@ public class WorkSiteRequestController {
     }
 
     @RequestMapping(value = "/statistics/concierges", method = RequestMethod.GET)
-    @CrossOrigin
     @ResponseBody
     @Operation(tags = { "WorkSiteRequest" }, description = "Get number of worksite request by cites")
     public Map<UUID, Integer> getConciergesStatistics() {
