@@ -12,7 +12,6 @@ import java.util.logging.Logger;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -42,7 +41,6 @@ public class ToolController {
     private ToolUsageDAO toolUsageDAO;
 
     @RequestMapping(method = RequestMethod.GET)
-    @CrossOrigin
     @ResponseBody
     @Operation(tags = { "Tool" }, description = "Returns all tools")
     public List<ToolDTO> findAll() {
@@ -57,7 +55,6 @@ public class ToolController {
     }
 
     @RequestMapping(value = "/{name}", method = RequestMethod.GET)
-    @CrossOrigin
     @ResponseBody
     @Operation(tags = { "Tool" }, description = "Returns the tool with the name")
     public ToolDTO findOne(@PathVariable String name) {
@@ -74,7 +71,6 @@ public class ToolController {
     }
 
     @RequestMapping(value = "/create", method = RequestMethod.POST)
-    @CrossOrigin
     @ResponseBody
     @Operation(tags = { "Tool" }, description = "Create a tool")
     public ToolDTO create(@RequestBody ToolDTO toolDTO) {
@@ -94,7 +90,6 @@ public class ToolController {
     }
 
     @RequestMapping(value = "/{name}/availabilities", method = RequestMethod.GET)
-    @CrossOrigin
     @Operation(tags = {
             "Tool" }, description = "Returns the number of availabilities for tool with the name at specified timeline")
     public int numberOfAvailabilitiesAtTimeline(@PathVariable String name, @RequestBody TimeLine timeLine) {
@@ -140,7 +135,6 @@ public class ToolController {
     }
 
     @RequestMapping(value = "/availabilities", method = RequestMethod.POST)
-    @CrossOrigin
     @Operation(tags = { "Tool" }, description = "Returns the availabilities for all tools at specified timeline")
     public Map<String, Integer> getAvailabilities(@RequestBody TimeLine timeLine) {
         LOGGER.info("REST request to get tools availabilities between " + timeLine.getBegin() + " and "
@@ -155,7 +149,6 @@ public class ToolController {
     }
 
     @RequestMapping(value = "/delete/{name}", method = RequestMethod.DELETE)
-    @CrossOrigin
     @ResponseBody
     @Operation(tags = { "Tool" }, description = "Delete tool by name")
     public void deleteInvoice(@PathVariable String name) {

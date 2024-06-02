@@ -10,7 +10,6 @@ import java.util.logging.Logger;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -54,7 +53,6 @@ public class CustomerController {
 
 
     @RequestMapping(method = RequestMethod.GET)
-    @CrossOrigin
     @ResponseBody
     @Operation(tags = { "Customer" }, description = "Returns all customers")
     public List<CustomerData> findAll() {
@@ -70,7 +68,6 @@ public class CustomerController {
 
 
     @RequestMapping(value = "/{id}", method = RequestMethod.GET)
-    @CrossOrigin
     @ResponseBody
     @Operation(tags = { "Customer" }, description = "Returns the customer with the id")
     public CustomerData findOne(@PathVariable UUID id) {
@@ -81,7 +78,6 @@ public class CustomerController {
     }
 
     @RequestMapping(value = "/create", method = RequestMethod.POST)
-    @CrossOrigin
     @ResponseBody
     @Operation(tags = { "Customer" }, description = "Create an customer")
     public CustomerData create(@RequestBody CustomerDTO customerDTO) {
@@ -93,7 +89,6 @@ public class CustomerController {
     }
 
     @RequestMapping(value = "/{id}/update", method = RequestMethod.PATCH)
-    @CrossOrigin
     @ResponseBody
     @Operation(tags = { "Customer" }, description = "Create an customer")
     public CustomerData update(@PathVariable UUID id, @RequestBody CustomerDTO customerDTO) {
@@ -107,7 +102,6 @@ public class CustomerController {
     }
 
     @RequestMapping(value = "/{id}/workSiteRequest", method = RequestMethod.GET)
-    @CrossOrigin
     @ResponseBody
     @Operation(tags = { "Customer" }, description = "get customer's workSiteRequest")
     public Set<WorkSiteRequestData> getCustomerRequests(@PathVariable UUID id) {
