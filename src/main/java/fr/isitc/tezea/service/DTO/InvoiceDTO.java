@@ -25,4 +25,11 @@ public class InvoiceDTO implements Serializable {
         this.invoiceFile = invoice.getInvoice();
         this.fileExtension = invoice.getFileExtension();
     }
+
+    @Override
+    public String toString() {
+        return "InvoiceDTO [title=" + title + ", description=" + description + ", amount=" + amount + ", fileExtension="
+                + fileExtension + "]";
+    }
+    
 }

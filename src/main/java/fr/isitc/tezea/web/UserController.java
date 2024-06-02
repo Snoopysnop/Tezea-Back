@@ -15,8 +15,11 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 
 import fr.isitc.tezea.DAO.IncidentDAO;
@@ -27,6 +30,7 @@ import fr.isitc.tezea.model.User;
 import fr.isitc.tezea.model.WorkSite;
 import fr.isitc.tezea.model.WorkSiteRequest;
 import fr.isitc.tezea.model.enums.Role;
+import fr.isitc.tezea.service.UserServices;
 import fr.isitc.tezea.service.DTO.UserDTO;
 import fr.isitc.tezea.service.data.UserData;
 import fr.isitc.tezea.service.data.WorkSiteAndRequestData;
@@ -43,6 +47,9 @@ public class UserController {
 
     @Autowired
     private UserDAO userDAO;
+
+    @Autowired
+    private UserServices userServices;
 
     @Autowired
     private WorkSiteDAO workSiteDAO;
@@ -90,6 +97,21 @@ public class UserController {
         return new UserData(user);
     }
 
+    @RequestMapping(value = "/email", method = RequestMethod.GET)
+    @CrossOrigin
+    @ResponseBody
+    @Operation(tags = { "User" }, description = "Finds user by email")
+    public UserData findByEmail(@RequestParam String email) {
+        LOGGER.info("REST request to find user with email " + email);
+
+        Optional<User> user = userDAO.findByEmail(email);
+        if (!user.isPresent()) {
+            LOGGER.info("User with email " + email + " not found");
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+        }
+        return new UserData(user.get());
+    }
+
     @RequestMapping(value = "/findSomeUsers", method = RequestMethod.POST)
     @CrossOrigin
     @ResponseBody
@@ -104,16 +126,13 @@ public class UserController {
         return users;
     }
 
-    @RequestMapping(value = "/create", method = RequestMethod.POST)
+    @RequestMapping(value = "/create", method=RequestMethod.POST)
     @CrossOrigin
     @ResponseBody
     @Operation(tags = { "User" }, description = "Create an user")
-    public UserData create(@RequestBody UserDTO userDTO) {
+    public UserData create(@RequestPart("user") UserDTO userDTO, @RequestPart("password") String password, @RequestPart(value = "file", required = false) MultipartFile file) {
         LOGGER.info("REST request to create user " + userDTO);
-
-        User user = new User(userDTO);
-        userDAO.save(user);
-        return new UserData(user);
+        return userServices.register(userDTO, password, file);
     }
 
     @RequestMapping(value = "/{id}/profilePicture", method = RequestMethod.POST)
@@ -121,7 +140,7 @@ public class UserController {
     @ResponseBody
     @Operation(tags = { "User" }, description = "Update user profile picture")
     public UserData updateProfilePicture(@PathVariable UUID id, @RequestBody String profilePicture) {
-        LOGGER.info("REST request to update user " + id + " profile picture with " + profilePicture);
+        LOGGER.info("REST request to update user " + id + " profile picture");
 
         User user = findUser(id);
         user.setProfilePicture(profilePicture);
@@ -130,12 +149,12 @@ public class UserController {
         return new UserData(user);
     }
 
-    @RequestMapping(value = "/{role}", method = RequestMethod.POST)
+    @RequestMapping(value = "/role", method = RequestMethod.GET)
     @CrossOrigin
     @ResponseBody
     @Operation(tags = { "User" }, description = "Find users by role")
-    public Set<UserData> findbyRole(@RequestBody Role role) {
-        LOGGER.info("REST request to find users with role" + role);
+    public Set<UserData> findbyRole(@RequestParam Role role) {
+        LOGGER.info("REST request to find users with role " + role);
 
         Set<UserData> users = new HashSet<>();
 
@@ -154,6 +173,26 @@ public class UserController {
         LOGGER.info("REST request to find a concierge");
 
         return new UserData(userDAO.findFirstByRole(Role.Concierge));
+    }
+
+    @RequestMapping(value = "/SiteChief", method = RequestMethod.GET)
+    @CrossOrigin
+    @ResponseBody
+    @Operation(tags = { "SiteChief" }, description = "Find a site chief")
+    public UserData findSiteChief() {
+        LOGGER.info("REST request to find a site chief");
+
+        return new UserData(userDAO.findFirstByRole(Role.SiteChief));
+    }
+
+    @RequestMapping(value = "/WorkSiteChief", method = RequestMethod.GET)
+    @CrossOrigin
+    @ResponseBody
+    @Operation(tags = { "WorkSiteChief" }, description = "Find a work site chief")
+    public UserData findWorkSiteChief() {
+        LOGGER.info("REST request to find a work site chief");
+
+        return new UserData(userDAO.findFirstByRole(Role.WorkSiteChief));
     }
 
     @RequestMapping(value = "/staff/availabilities", method = RequestMethod.POST)
@@ -266,7 +305,7 @@ public class UserController {
             boolean hasIncidents = !incidentDAO.findByWorkSite(workSite).isEmpty();
 
             WorkSiteData workSiteData = new WorkSiteData(workSite, toolUsageDAO.findByWorkSite(workSite));
-            
+
             datas.add(new WorkSiteAndRequestData(workSiteData, request, hasIncidents));
         }
 

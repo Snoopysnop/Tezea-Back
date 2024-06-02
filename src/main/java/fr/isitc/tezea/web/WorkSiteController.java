@@ -45,6 +45,7 @@ import fr.isitc.tezea.service.data.IncidentData;
 import fr.isitc.tezea.service.data.InvoiceData;
 import fr.isitc.tezea.service.data.UserData;
 import fr.isitc.tezea.service.data.WorkSiteData;
+import fr.isitc.tezea.utils.TimeLine;
 import fr.isitc.tezea.service.DTO.InvoiceDTO;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -109,6 +110,7 @@ public class WorkSiteController {
     @ResponseBody
     @Operation(tags = { "WorkSite" }, description = "Returns the work site {id}")
     public WorkSiteData findById(@PathVariable UUID id) {
+        LOGGER.info("REST request to find user with id " + id);
 
         WorkSite worksite = findWorkSite(id);
         WorkSiteData data = new WorkSiteData(worksite, toolUsageDAO.findByWorkSite(worksite));
@@ -142,6 +144,7 @@ public class WorkSiteController {
     @Operation(tags = { "WorkSite" }, description = "Create a work site")
     public WorkSiteData create(@RequestBody WorkSiteDTO workSiteDTO) {
         LOGGER.info("REST request to create work site " + workSiteDTO);
+        
 
         Set<User> staff = new HashSet<>();
 
@@ -151,6 +154,13 @@ public class WorkSiteController {
                 LOGGER.info("Employee " + employeeID + " not found");
                 throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
             }
+
+            // check if employee is available
+            if(!user.get().isAvailable(new TimeLine(workSiteDTO.getBegin(), workSiteDTO.getEnd()), workSiteDAO.findByEmployee(user.get()))){
+                LOGGER.info("Employee " + employeeID + " is not available");
+                throw new ResponseStatusException(HttpStatus.CONFLICT);
+            }
+
             staff.add(user.get());
         }
 
@@ -158,6 +168,12 @@ public class WorkSiteController {
         if (!workSiteChief.isPresent()) {
             LOGGER.info("Worksite chief " + workSiteDTO.getWorkSiteChief() + " not found");
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+        }
+
+        // check if worksite chief is available
+        if(!workSiteChief.get().isAvailable(new TimeLine(workSiteDTO.getBegin(), workSiteDTO.getEnd()), workSiteDAO.findByWorkSiteChief(workSiteChief.get()))){
+            LOGGER.info("Worksite chief " + workSiteDTO.getWorkSiteChief() + " is not available");
+            throw new ResponseStatusException(HttpStatus.CONFLICT);
         }
 
         Optional<WorkSiteRequest> workSiteRequest = workSiteRequestDAO.findById(workSiteDTO.getWorkSiteRequest());
@@ -202,6 +218,7 @@ public class WorkSiteController {
     @ResponseBody
     @Operation(tags = { "WorkSite" }, description = "Set comment")
     public void uploadComment(@PathVariable UUID id, @RequestBody String comment) {
+        LOGGER.info("REST put comment " + comment + " to update worksite " + id);
 
         WorkSite workSite = findWorkSite(id);
 
@@ -220,6 +237,7 @@ public class WorkSiteController {
     @Operation(tags = { "WorkSite" }, description = "Set signature and satisfaction")
     public void uploadSignatureAndSatisfaction(@PathVariable UUID id, @RequestBody String signature,
             @RequestParam("satisfaction") SatisfactionLevel satisfaction) {
+        LOGGER.info("REST request to upload signature and set satisfaction to " + signature  + " on workSite " + id);
 
         WorkSite workSite = findWorkSite(id);
 
@@ -239,6 +257,7 @@ public class WorkSiteController {
     @ResponseBody
     @Operation(tags = { "WorkSite" }, description = "Update status of a work site")
     public void updateStatus(@PathVariable UUID id, @RequestParam("status") WorkSiteStatus status) {
+        LOGGER.info("REST request to set status to " + status + " on worksite " + id);
 
         WorkSite workSite = findWorkSite(id);
 
